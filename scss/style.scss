@@ -1,0 +1,160 @@
+@import 'config';
+@import 'utilities';
+
+$body-color: #1d1d20;
+$white-color: #f0f0f0;
+$black-color: black;
+$active-color: #04AA6D;
+$not-active-color: #017235;
+
+body{
+    align-content: center;
+    margin-top: 100px;
+    background: $body-color;
+    color: $white-color;
+    font-family: $font-stack;
+    margin-bottom: 60px;
+    padding-bottom: $more-space;
+}
+
+.contact{
+    @include set-flex(row);
+    width: 100%;
+    position: fixed;
+    justify-content: right;
+    top: 0;
+    right: 0;
+    margin: auto;
+    background-color: $black-color;
+
+    img{
+        padding: 10px;
+    }
+}
+
+nav{
+    @include set-text-layout("large");
+    float: left;
+    width: auto;
+	padding: $more-space;
+    margin: 55px;
+    border: $white-color;
+    border-style: solid;
+    border-radius: $border-radius + px;
+
+    & ul{ 
+        list-style-type: none; 
+        margin: 0;
+    }   
+   
+    & a{
+        padding: 5px;
+        color: $white-color;
+        font-family: 'Figtree', Georgia, serif;
+        font-size: 1em;
+        border-radius: 6px;
+
+        &:hover:not(.active) {
+            background-color: $not-active-color;
+        }
+    }
+
+    & .active {
+        background-color: $active-color;
+    }
+}
+
+.home{
+    display: grid;
+    grid-template-columns: auto;
+    margin: auto;
+    min-width: 620px;
+    justify-content: center;
+}
+
+article{
+    @include set-flex(row);
+    flex-wrap: wrap;
+
+    > *{
+        flex-grow: 1;
+        text-align: center;
+        border: 1px solid;
+        padding: 2px;
+    }
+}
+
+
+.intro{
+    width: auto;
+    margin: auto;
+    padding: $less-space;
+}
+
+.main-content{
+    @include set-text-layout("small");
+    border: solid;
+    border-radius: $border-radius + px;
+    padding: $less-space;
+    height: 120px;
+    overflow: scroll;
+}
+
+.skills{
+    @include set-text-layout("small");
+    width: 620px;
+	padding: $less-space;
+    margin: auto;
+    border: solid;
+    border-radius: $border-radius + px;
+    margin-bottom: 20px;
+}
+
+.row{
+    @include set-flex(row);
+    margin: auto; 
+    position: relative;
+    left: 5%;
+}
+
+#gallery{
+    border: solid;
+    border-radius: $border-radius + px;
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    min-width: 300px;
+    max-width: 700px;
+
+    h3{
+        @include set-text-layout(small);
+        padding: $less-space;
+    }
+
+    span {
+        display: none; 
+
+        img{
+            width: 500px;
+            height: auto;
+        }
+    }    
+    
+    figure img{
+        border-radius: $border-radius + px;
+    }
+
+}
+
+figure img{
+    width: 225px;
+    height: auto;
+}
+
+figcaption{
+    text-align: center;
+    padding: $less-space;
+}
+
+
+@import 'mobile';

@@ -1,0 +1,70 @@
+
+@media only screen and (max-width: 950px) {
+    nav{
+        float: none;
+    }
+
+    .intro{
+        max-width: 560px;
+        min-width: 450px;
+    }
+
+    .row{
+        left: unset;
+        justify-content: center;
+    }
+
+    #gallery{
+        border: solid;
+        border-radius: 16px;
+        display: grid;
+        grid-template-columns: auto;
+    }
+}
+
+
+@media only screen and (max-width: 615px) {
+    nav{
+        min-width: 180px;
+    }
+    
+    .home{
+        max-width: 300px;
+    }
+}
+
+
+@media only screen and (max-width: 520px) {
+    .home{
+        max-width: 300px;
+        min-width: 200px;
+        justify-content: center;
+    }
+}
+
+
+%media1265{
+    @media only screen and (max-width: 1265px) {
+        margin-right: 5%;
+    }
+}
+
+%media615{
+    @media only screen and (max-width: 615px) {
+        max-width: 450px;
+        min-width: 300px;
+    }
+}
+
+%media520{
+    @media only screen and (max-width: 520px) {
+        max-width: 250px;
+        min-width: 150px;
+    }
+}
+
+.intro, .skills{
+    @extend %media1265;
+    @extend %media615;
+    @extend %media520;
+}

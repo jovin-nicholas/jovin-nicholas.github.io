@@ -1,0 +1,37 @@
+@use "sass:map";
+
+$font-stack: 'Figtree', Georgia, serif;
+$less-space: 16px;
+$more-space: 20px;
+$border-radius: 16;
+$line-height-map: (
+    "large" : 3,
+    "small" : 1.6
+);
+
+@function get-height($height){
+    @return map-get($map: $line-height-map, $key: $height);
+}
+
+@mixin set-flex($direction){
+    display: flex;
+    flex-direction: $direction;
+}
+
+@mixin set-text-layout($height){
+    line-height: get-height($height);
+    font-size: 1.2em;
+    font-weight: 100;
+}
+
+$colamounts: (1,2);
+@each $col in $colamounts{
+    .col#{$col}{
+        margin: 5px;
+        padding: ($less-space/2);
+        width: 350px;
+        height: auto;
+        border: solid;
+        border-radius: $border-radius+px;
+    }
+}
