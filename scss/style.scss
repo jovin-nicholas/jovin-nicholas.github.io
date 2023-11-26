@@ -142,6 +142,10 @@ article{
     
     figure img{
         border-radius: $border-radius + px;
+
+        &:hover{
+            cursor: pointer;
+        }
     }
 
 }

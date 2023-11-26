@@ -164,6 +164,9 @@ article > * {
 #gallery figure img {
   border-radius: 16px;
 }
+#gallery figure img:hover {
+  cursor: pointer;
+}
 
 figure img {
   width: 225px;
