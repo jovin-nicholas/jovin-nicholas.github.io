@@ -90,6 +90,10 @@ nav .active {
   justify-content: center;
   margin-bottom: 20px;
 }
+.profile_header h1 {
+  width: 100%;
+  text-align: left;
+}
 .profile_header img {
   border-radius: 50%;
   width: 200px;
@@ -156,6 +160,9 @@ article > * {
   margin: auto;
   position: relative;
   left: 5%;
+}
+.row h2 {
+  text-align: center;
 }
 
 .col1 {
