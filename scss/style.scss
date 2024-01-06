@@ -119,9 +119,10 @@ article{
     border: solid;
     border-radius: $border-radius + px;
     padding: $less-space;
-    height: 120px;
+    margin: auto;
+    // height: 120px;
     width: 620px;
-    overflow: scroll;
+    // overflow: scroll;
 }
 
 .skills{

@@ -1,12 +1,16 @@
 
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 980px) {
     nav{
         float: none;
     }
 
-    .intro{
-        max-width: 560px;
-        min-width: 450px;
+    .profile_header{
+        flex-direction: column;
+        align-items: center;
+
+        h1{
+            text-align: center;
+        }
     }
 
     .row{
@@ -42,13 +46,6 @@
     }
 }
 
-
-%media1265{
-    @media only screen and (max-width: 1265px) {
-        margin-right: 5%;
-    }
-}
-
 %media615{
     @media only screen and (max-width: 615px) {
         max-width: 450px;
@@ -63,8 +60,7 @@
     }
 }
 
-.intro, .skills{
-    @extend %media1265;
+.main-content, .skills{
     @extend %media615;
     @extend %media520;
 }
