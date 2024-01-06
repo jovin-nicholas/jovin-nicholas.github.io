@@ -64,6 +64,24 @@ nav{
     }
 }
 
+.profile_header{
+    @include set-flex(row);
+    width: 100%;
+    margin: auto;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    img{
+        border-radius: 50%;
+        width: 200px;
+        height: 200px;
+        margin: auto;
+        border: solid;
+        border-color: $white-color;
+        border-width: 2px;
+    }
+}
+
 .home{
     display: grid;
     grid-template-columns: auto;
@@ -97,6 +115,7 @@ article{
     border-radius: $border-radius + px;
     padding: $less-space;
     height: 120px;
+    width: 620px;
     overflow: scroll;
 }
 
@@ -115,6 +134,10 @@ article{
     margin: auto; 
     position: relative;
     left: 5%;
+}
+
+.col1 {
+    width: 60%;
 }
 
 #gallery{
