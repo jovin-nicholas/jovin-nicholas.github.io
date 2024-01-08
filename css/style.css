@@ -163,6 +163,10 @@ article > * {
 .row h2 {
   text-align: center;
 }
+.row ul {
+  line-height: 1.4;
+  font-size: 1em;
+}
 
 .col1 {
   width: 60%;
