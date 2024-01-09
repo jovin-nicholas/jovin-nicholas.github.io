@@ -24,7 +24,7 @@ $line-height-map: (
     font-weight: 100;
 }
 
-$colamounts: (1,2);
+$colamounts: (1,2,3,4, 5);
 @each $col in $colamounts{
     .col#{$col}{
         margin: 5px;

@@ -14,9 +14,20 @@
     }
 
     .row{
+        position: static;
+        left: unset;
+        justify-content: center;
+
+        > div {
+            min-width: 200px;
+        }
+    }
+
+    .row1{
         left: unset;
         justify-content: center;
     }
+    
 
     #gallery{
         border: solid;
@@ -28,6 +39,24 @@
 
 
 @media only screen and (max-width: 615px) {
+    .row{
+        flex-direction: column;
+        align-items: center;
+        
+        > div {
+            width: fit-content;
+        }
+    }
+
+    .row1{
+        flex-direction: column;
+        align-items: center;
+
+        > div {
+            width: fit-content;
+        }
+    }
+
     nav{
         min-width: 180px;
     }
