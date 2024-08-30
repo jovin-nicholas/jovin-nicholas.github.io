@@ -6,6 +6,11 @@ $white-color: #f0f0f0;
 $black-color: black;
 $active-color: #04AA6D;
 $not-active-color: #017235;
+$left-offset: 15%;
+
+html{
+    scroll-behavior: smooth;
+}
 
 body{
     align-content: center;
@@ -32,6 +37,21 @@ body{
     }
 }
 
+section {
+    padding: 12px 0;
+}
+
+.nav-menu{
+    position: fixed; 
+    left: 0;
+}
+
+.header{
+    text-align: center;
+    position: relative;
+    left: 15%;
+}
+
 nav{
     @include set-text-layout("large");
     float: left;
@@ -48,6 +68,8 @@ nav{
     }   
    
     & a{
+        // display: block;
+        // margin-bottom: 10px;
         padding: 5px;
         color: $white-color;
         font-family: 'Figtree', Georgia, serif;
@@ -93,6 +115,17 @@ nav{
     margin: auto;
     min-width: 620px;
     justify-content: center;
+    position: relative;
+    left: $left-offset;
+}
+
+.work{
+    display: grid;
+    grid-template-columns: auto;
+    margin: auto;
+    min-width: 620px;
+    justify-content: center;
+    position: relative;
 }
 
 article{
@@ -139,7 +172,7 @@ article{
     @include set-flex(row);
     margin: auto; 
     position: relative;
-    left: 5%;
+    left: $left-offset;
 
     h2{
         text-align: center;
@@ -151,15 +184,17 @@ article{
     }
 }
 
-.col1 {
-    width: 60%;
-}
+// .col1 {
+//     width: 60%;
+//     max-width: 650px;
+//     min-width: 500px;
+// }
 
 .row1{
     @include set-flex(row);
     margin: auto; 
     position: relative;
-    left: 5%;
+    left: $left-offset;
     justify-content: center;
 
     h2{
@@ -172,13 +207,18 @@ article{
     }
 }
 
-#gallery{
+.gallery{
     border: solid;
     border-radius: $border-radius + px;
     display: grid;
     grid-template-columns: auto auto;
     justify-content: center;
     min-width: 300px;
+    width: fit-content;
+    margin: auto;
+    position: relative;
+    left: $left-offset;
+    padding: 12px;
     // max-width: 700px;
 
     h3{
