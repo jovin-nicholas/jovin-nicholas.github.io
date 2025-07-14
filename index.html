@@ -122,7 +122,7 @@
 
     <main>
         <!-- =================================================================== -->
-        <!-- HERO SECTION                                                        -->
+        <!-- PROFILE SECTION                                                        -->
         <!-- =================================================================== -->
         <section id="home" class="container mx-auto px-6 py-16 md:py-24 text-center">
             <div class="flex flex-col items-center justify-center space-y-6">
@@ -132,9 +132,12 @@
                     Full-Stack Software Engineer
                 </p>
             </div>
-            <div class="mt-8 max-w-3xl mx-auto text-gray-300 text-left bg-card p-6 rounded-lg shadow-sm">
-                <p>
-                    I'm a curious engineer who gets genuinely excited when things finally work and even more motivated when they don't right away. I enjoy the challenge of figuring things out and turning ideas into something real, like a healthcare chatbot that helps users or a multiplayer location-based hide-and-seek game using WebSockets and AWS.
+            <div class="mt-8 max-w-3xl mx-auto text-gray-300 bg-card p-8 rounded-xl shadow-md transition-transform duration-300 hover:scale-105 text-left">
+                <p class="leading-relaxed line-clamp-2">
+                    I'm a curious engineer who gets genuinely excited when things finally work and even more motivated when they don't right away.
+                </p>
+                <p class="leading-relaxed line-clamp-2"></p>
+                    I'm excited about the future of AI and enjoy integrating it into products that help real users in tangible ways.
                 </p>
             </div>
             <div class="mt-8 flex justify-center space-x-4">
@@ -219,13 +222,14 @@
                 experience: [
                     { company: 'Health Innovators', role: 'Full-Stack Software Engineer', duration: 'Jan 2024 – Apr 2025', location: 'Boston, MA', points: ['Developed a real-time healthcare AI chatbot platform with multimodal input and persistent cloud storage, enabling automated symptom triage and streaming clinical insights.', 'Designed modular agentic workflows using Google ADK to orchestrate AI tools for context-aware symptom extraction, diagnosis classification, and provider recommendations.', 'Implemented scalable backend services and API integrations for secure data processing and efficient communication within a distributed system architecture.'] },
                     { company: 'LTIMindtree Ltd.', role: 'Software Engineer – Full-Stack Development', duration: 'Jun 2021 – Jul 2023', location: 'Mumbai, India', points: ['Re-architected monolithic applications into scalable microservices using Spring Boot and React.js, reducing latency by 37% and improving system modularity.', 'Developed and integrated SOAP-based APIs for critical transaction systems; leveraged asynchronous processing to cut latency by 60%.', 'Authored and validated WSDL contracts, enabling robust service communication and reducing incident reports by 33%.'] },
-                    { company: 'LTIMindtree Ltd.', role: 'Software Engineering Intern', duration: 'Jan 2020 – Oct 2020', location: 'Mumbai, India', points: ['Developed an Android app using Java and Firebase Realtime Database, digitizing manual event workflows for 200+ users.', 'Optimized frontend with lazy image loading and RecyclerView, reducing load times by 30%.'] }
+                    { company: 'Young Women’s Christian Association of Bombay.', role: 'Software Engineering Intern', duration: 'Jan 2020 – Oct 2020', location: 'Mumbai, India', points: ['Developed an Android app using Java and Firebase Realtime Database, digitizing manual event workflows for 200+ users.', 'Optimized frontend with lazy image loading and RecyclerView, reducing load times by 30%.'] }
                 ],
                 projects: [
-                    { title: 'Hide and Seek Game', tech: ['React', 'Flask', 'Docker', 'Kubernetes', 'Redis', 'AWS', 'WebSockets'], desc: 'Engineered a distributed, real-time location-based game with WebSocket communication and deployed microservices on AWS using Kubernetes.', github: 'https://github.com/jovin-nicholas/catchme-game' },
-                    { title: 'TA Management System', tech: ['Java', 'Spring Boot', 'Hibernate', 'MySQL'], desc: 'Designed scalable backend APIs and approval workflows to manage over 300 users, ensuring security with role-based access control.', github: 'https://github.com/jovin-nicholas/TA-Application-Management' },
-                    { title: 'SafeDine Website', tech: ['MongoDB', 'Express', 'React', 'Node.js', 'Google Places API'], desc: 'Built a public health transparency platform using the MERN stack. Boosted data accuracy by 90% with Google Places API and cut latency 60% with Redis.', github: 'https://github.com/DarylCFerns99/INFO6150_Project' },
-                    { title: 'Servify – API Optimization', tech: ['Java', 'Android', 'Retrofit', 'MVC'], desc: 'Refactored an Android application to follow MVC principles, improving maintainability. Integrated dynamic base URL switching and multi-language support.', github: null }
+                    { title: 'Hide and Seek Game', tech: ['React', 'Flask', 'Docker', 'Kubernetes', 'Redis', 'AWS', 'WebSockets'], desc: 'Real-time location-based game with WebSocket communication, deployed on AWS using Kubernetes.', github: 'https://github.com/jovin-nicholas/catchme-game' },
+                    { title: 'TA Management System', tech: ['Java', 'Spring Boot', 'Hibernate', 'MySQL'], desc: 'Scalable backend APIs and approval workflows to manage users with role-based access control.', github: 'https://github.com/jovin-nicholas/TA-Application-Management' },
+                    { title: 'SafeDine Website', tech: ['MongoDB', 'Express', 'React', 'Node.js', 'Google Places API'], desc: 'Public health platform using MERN stack, boosted data accuracy with Google Places API.', github: 'https://github.com/DarylCFerns99/INFO6150_Project' },
+                    { title: 'Servify – API Optimization', tech: ['Java', 'Android', 'Retrofit', 'MVC'], desc: 'Refactored Android app to MVC, integrated dynamic base URL switching and multi-language support.', github: null },
+                    { title: 'Dynamic JSON Schema REST Service', tech: ['Spring Boot', 'Elasticsearch', 'Redis', 'RabbitMQ'], desc: 'REST APIs with Spring Boot, Redis, and Elasticsearch for dynamic schema validation.', github: 'https://github.com/jovin-nicholas/INFO7255-CRUDRestAPI-Redis-ElasticSearch' },
                 ],
                 education: [
                     { institution: 'Northeastern University, Boston, MA', degree: 'Master of Science in Computer Software Engineering', date: 'Expected Dec 2025', coursework: 'Software Design Patterns, DevOps, Web Development, Algorithms, System Design, Distributed Systems' },
@@ -235,7 +239,8 @@
                     title: 'Leadership & Volunteering',
                     points: [
                         'Mentored 20+ students from underserved backgrounds, teaching them algorithms, system design, and project development skills.',
-                        'Co-founded a university club offering technical solutions to NGOs; led development of a nonprofit’s first cloud-hosted mobile platform.'
+                        'Co-founded a university club offering technical solutions to NGOs; led development of a nonprofit’s first cloud-hosted mobile platform.',
+                        'Instructed over 80 students on Unity 3D and mentored 5 teams for an intercollegiate Game Development Competition.',
                     ]
                 }
             };
