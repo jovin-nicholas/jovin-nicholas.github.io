@@ -13,14 +13,39 @@
       --surf2:    #141414;
       --border:   #1e1e1e;
       --ink:      #ede8e0;
-      --muted:    #555555;
-      --muted2:   #777777;
+      --muted:    #999999;
+      --muted2:   #aaaaaa;
       --accent:   #d4a847;
       --accentd:  #a07830;
       --mono:     'IBM Plex Mono', 'Courier New', monospace;
       --display:  'DM Serif Display', Georgia, serif;
       --sans:     'Syne', system-ui, sans-serif;
     }
+
+    /* ── Light mode overrides ── */
+    html.light {
+      --bg:       #f5f2ee;
+      --surface:  #ede9e3;
+      --surf2:    #e4e0da;
+      --border:   #d0ccc5;
+      --ink:      #1a1714;
+      --muted:    #6b6560;
+      --muted2:   #5a5550;
+      --accent:   #b8872a;
+      --accentd:  #8c6520;
+    }
+
+    /* ── Theme toggle button ── */
+    #theme-toggle {
+      font-family: var(--mono); font-size: .65rem;
+      letter-spacing: .15em; text-transform: uppercase;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); padding: .4rem .9rem;
+      cursor: pointer; transition: border-color .2s, color .2s;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    #theme-toggle:hover { border-color: var(--accent); color: var(--ink); }
+    .toggle-icon { font-size: .8rem; line-height: 1; }
 
     /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,8 +54,8 @@
       background: var(--bg);
       color: var(--ink);
       font-family: var(--mono);
-      font-size: 14px;
-      line-height: 1.75;
+      font-size: 15px;
+      line-height: 1.8;
       overflow-x: hidden;
       cursor: none;
     }
@@ -67,6 +92,10 @@
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
+    html.light nav.scrolled {
+      background: rgba(245,242,238,.94);
+      border-bottom: 1px solid var(--border);
+    }
     .nav-logo {
       font-family: var(--sans); font-weight: 800;
       font-size: 1rem; letter-spacing: .1em;
@@ -88,32 +117,29 @@
     .nav-links a:hover { color: var(--ink); }
     .nav-links a:hover::after { width: 100%; }
 
-    /* ── Hero ── */
+    /* ── Hero -- centered Austin style ── */
     #hero {
-      position: relative; min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 0 3rem; overflow: hidden;
-    }
-    #particle-canvas {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      z-index: 0; pointer-events: none;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 7rem 3rem 3rem;
+      overflow: hidden;
+      text-align: center;
     }
     .hero-inner {
       position: relative; z-index: 2;
-      width: 100%; max-width: 1100px;
-    }
-    .hero-eyebrow {
-      font-size: .7rem; letter-spacing: .22em;
-      text-transform: uppercase; color: var(--accent);
-      margin-bottom: 1.5rem;
-      opacity: 0; animation: fadeUp .6s ease .3s forwards;
+      width: 100%; max-width: 860px;
+      display: flex; flex-direction: column; align-items: center;
     }
     #hero-name {
       font-family: var(--display);
-      font-size: clamp(3rem, 8.5vw, 7rem);
-      line-height: 1; letter-spacing: -.02em;
-      color: var(--ink); margin-bottom: 1rem;
+      font-size: clamp(2.8rem, 9vw, 8rem);
+      line-height: .95; letter-spacing: -.03em;
+      color: var(--ink); margin-bottom: 1.4rem;
+      white-space: nowrap;
     }
     .char {
       display: inline-block; opacity: 0;
@@ -122,12 +148,12 @@
     }
     .space-char { display: inline-block; width: .28em; }
     .hero-typewriter {
-      display: flex; align-items: center; gap: .5rem;
-      height: 2em; margin-bottom: 2.5rem;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      height: 2em; margin-bottom: 3rem;
       opacity: 0; animation: fadeUp .6s ease 1.2s forwards;
     }
-    .type-prefix { color: var(--accent); font-size: 1rem; }
-    #typed-text  { color: var(--ink); font-size: clamp(.85rem,1.8vw,1.05rem); }
+    .type-prefix { color: var(--accent); font-size: 1.1rem; }
+    #typed-text  { color: var(--ink); font-size: clamp(1rem,2.2vw,1.3rem); }
     .cursor-blink {
       display: inline-block; width: 2px; height: 1.1em;
       background: var(--accent);
@@ -135,14 +161,25 @@
       vertical-align: middle; margin-left: 2px;
     }
 
-    /* Hero lower grid */
-    .hero-lower {
-      display: flex; gap: 4rem; align-items: flex-start; flex-wrap: wrap;
-      opacity: 0; animation: fadeUp .6s ease 1.5s forwards;
+    /* Divider line between name block and lower content */
+    .hero-divider {
+      width: 40px; height: 1px; background: var(--border);
+      margin: 0 auto 3rem; opacity: 0;
+      animation: fadeUp .6s ease 1.8s forwards;
     }
-    .hero-bullets { flex: 1; min-width: 280px; }
-    .hero-bullets ul { margin-bottom: 2rem; }
-    .hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+    /* Hero lower: facts row centered, then bullets, then CTAs */
+    .hero-lower {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 2.5rem; width: 100%;
+      opacity: 0; animation: fadeUp .8s ease 2s forwards;
+    }
+    /* Photo + facts in a horizontal centered row */
+    .hero-facts-row {
+      display: flex; align-items: center; gap: 1.5rem;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; }
 
     /* ── Buttons ── */
     .btn-primary {
@@ -163,24 +200,13 @@
     }
     .btn-ghost:hover { border-color: var(--accent); color: var(--ink); transform: translateY(-2px); }
 
-    /* Quick facts sidebar */
-    .hero-facts { flex-shrink: 0; min-width: 260px; max-width: 320px; }
-    .hero-facts-photo { margin-bottom: 1.25rem; }
     .profile-photo {
-      width: 88px; height: 88px; border-radius: 50%;
+      width: 128px; height: 128px; border-radius: 50%;
       object-fit: cover; border: 2px solid var(--border);
       filter: grayscale(20%); transition: filter .3s;
       display: block;
     }
     .profile-photo:hover { filter: grayscale(0%); }
-    .photo-fallback {
-      display: none; width: 88px; height: 88px; border-radius: 50%;
-      background: #1e1e1e; border: 2px solid #2a2a2a;
-      align-items: center; justify-content: center;
-    }
-    .photo-fallback span {
-      font-family: var(--display); color: var(--accent); font-size: 1.8rem;
-    }
     .facts-box {
       border: 1px solid var(--border); background: var(--surface);
       padding: .25rem 1.25rem;
@@ -191,19 +217,176 @@
     }
     .fact-row:last-child { border-bottom: none; }
     .fact-label {
-      font-size: .62rem; letter-spacing: .18em;
+      font-size: .7rem; letter-spacing: .14em;
       text-transform: uppercase; color: var(--accent);
       min-width: 86px; flex-shrink: 0;
     }
-    .fact-value { font-size: .72rem; color: var(--muted2); }
+    .fact-value { font-size: .8rem; color: var(--muted2); }
 
-    /* Scroll hint */
+    /* ── System Playground ── */
+    #playground {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem;
+    }
+    .playground-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 1.5rem;
+    }
+    .playground-hint {
+      font-size: .8rem; color: var(--muted);
+      letter-spacing: .04em; margin-top: .2rem;
+    }
+
+    /* ── Node tooltip ── */
+    #pg-tooltip {
+      position: fixed;
+      z-index: 9000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s ease;
+      min-width: 180px; max-width: 240px;
+    }
+    #pg-tooltip.visible { opacity: 1; }
+    .tt-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: .75rem 1rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.7);
+    }
+    .tt-status {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .62rem; letter-spacing: .15em;
+      text-transform: uppercase; margin-bottom: .5rem;
+    }
+    .tt-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .tt-dot-ok   { background: #4caf50; }
+    .tt-dot-down { background: #e53935; animation: blink .8s step-end infinite; }
+    .tt-dot-deg  { background: #d4a847; }
+    .tt-status-ok   { color: #4caf50; }
+    .tt-status-down { color: #e53935; }
+    .tt-status-deg  { color: #d4a847; }
+    .tt-name {
+      font-family: var(--sans); font-weight: 700;
+      font-size: .85rem; color: var(--ink);
+      margin-bottom: .15rem;
+    }
+    .tt-role {
+      font-size: .65rem; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: .5rem;
+    }
+    .tt-desc {
+      font-size: .7rem; color: var(--muted);
+      line-height: 1.6; margin-bottom: .5rem;
+    }
+    .tt-cascade {
+      font-size: .65rem; color: #e53935;
+      line-height: 1.5; border-top: 1px solid var(--border);
+      padding-top: .45rem; margin-top: .45rem;
+    }
+    /* Edge tooltip -- simpler */
+    .tt-edge {
+      font-size: .68rem; color: var(--muted);
+      line-height: 1.5;
+    }
+    .tt-edge strong { color: var(--ink); font-weight: 400; }
+    .btn-reset {
+      font-family: var(--mono); font-size: .65rem;
+      letter-spacing: .18em; text-transform: uppercase;
+      padding: .55rem 1.25rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-reset:hover { border-color: var(--accent); color: var(--ink); }
+    .speed-controls {
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .speed-label {
+      font-family: var(--mono); font-size: .62rem;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--muted); margin-right: .2rem;
+    }
+    .btn-speed {
+      font-family: var(--mono); font-size: .65rem;
+      letter-spacing: .1em;
+      padding: .45rem .8rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .btn-speed:hover  { border-color: var(--accent); color: var(--ink); }
+    .btn-speed.active { border-color: var(--accent); color: var(--accent); background: rgba(212,168,71,0.08); }
+    .playground-body {
+      display: flex; flex-direction: column; gap: 0;
+      border: 1px solid var(--border);
+    }
+    #pg-canvas {
+      display: block; width: 100%; height: 420px;
+      background: var(--bg); cursor: pointer;
+    }
+    .terminal {
+      border-top: 1px solid var(--border);
+      background: var(--surf2);
+      height: 160px; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .terminal-bar {
+      display: flex; align-items: center; gap: .4rem;
+      padding: .5rem .9rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface); flex-shrink: 0;
+    }
+    .terminal-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .td-red   { background: #e53935; }
+    .td-amber { background: #d4a847; }
+    .td-green { background: #4caf50; }
+    .terminal-title {
+      font-size: .65rem; letter-spacing: .15em;
+      color: var(--muted); margin-left: .5rem; flex: 1;
+    }
+    .btn-clear-term {
+      font-family: var(--mono); font-size: .6rem;
+      letter-spacing: .12em; text-transform: lowercase;
+      background: transparent; border: none;
+      color: var(--muted); cursor: pointer;
+      padding: .1rem .4rem;
+      transition: color .2s;
+    }
+    .btn-clear-term:hover { color: var(--accent); }
+    .terminal-lines {
+      flex: 1; overflow-y: auto; padding: .5rem .9rem;
+      display: flex; flex-direction: column; gap: .15rem;
+    }
+    .terminal-lines::-webkit-scrollbar { width: 3px; }
+    .terminal-lines::-webkit-scrollbar-track { background: transparent; }
+    .terminal-lines::-webkit-scrollbar-thumb { background: var(--border); }
+    .t-line {
+      font-family: var(--mono); font-size: .75rem;
+      line-height: 1.6; white-space: nowrap;
+      opacity: 0; animation: fadeUp .2s ease forwards;
+    }
+    .t-ok   { color: #4caf50; }
+    .t-warn { color: #d4a847; }
+    .t-err  { color: #e53935; }
+    .t-info { color: var(--muted); }
+
+    /* ── Scroll hint ── */
     .scroll-hint {
-      position: absolute; bottom: 2.5rem; left: 3rem;
       display: flex; align-items: center; gap: 1rem;
+      justify-content: center;
       font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
       color: var(--muted);
-      opacity: 0; animation: fadeUp .6s ease 2s forwards;
+      padding: 2rem 0 .5rem;
+      opacity: 0; animation: fadeUp .6s ease 2.8s forwards;
     }
     .scroll-line {
       width: 40px; height: 1px; background: var(--muted);
@@ -218,7 +401,7 @@
     /* ── Bullet style ── */
     .vbullet {
       display: flex; align-items: flex-start;
-      color: var(--muted); font-size: .85rem;
+      color: #aaaaaa; font-size: .95rem;
       margin-bottom: .75rem;
     }
     .vbullet::before {
@@ -232,7 +415,7 @@
     section { padding: 6rem 3rem; }
     .section-label {
       display: flex; align-items: center; gap: 1rem;
-      font-size: .68rem; letter-spacing: .25em;
+      font-size: .75rem; letter-spacing: .2em;
       text-transform: uppercase; color: var(--accent);
       margin-bottom: 1rem;
     }
@@ -258,23 +441,51 @@
     .d3 { transition-delay: .3s; }
     .d4 { transition-delay: .4s; }
 
-    /* ── What I Bring ── */
+    /* ── What I Bring -- Accordion ── */
     #value { background: var(--bg); }
-    .cards-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 1px; background: var(--border);
+    .accordion {
       border: 1px solid var(--border);
     }
-    .value-card {
-      background: var(--surface); padding: 2.5rem;
+    .acc-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .acc-item:last-child { border-bottom: none; }
+    .acc-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.5rem 2rem;
+      cursor: pointer;
+      background: var(--surface);
       transition: background .2s;
+      user-select: none;
     }
-    .value-card:hover { background: var(--surf2); }
-    .card-label {
-      font-size: .65rem; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--accent);
-      margin-bottom: 1.25rem;
+    .acc-header:hover { background: var(--surf2); }
+    .acc-header.open { background: var(--surf2); }
+    .acc-title {
+      font-family: var(--sans); font-size: 1.05rem;
+      font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--ink);
     }
+    .acc-header.open .acc-title { color: var(--accent); }
+    .acc-icon {
+      font-size: 1.2rem; color: var(--muted);
+      transition: transform .3s ease, color .2s;
+      line-height: 1;
+    }
+    .acc-header.open .acc-icon {
+      transform: rotate(45deg);
+      color: var(--accent);
+    }
+    .acc-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height .4s cubic-bezier(.16,1,.3,1), padding .3s ease;
+      padding: 0 2rem;
+      background: var(--bg);
+    }
+    .acc-body.open {
+      max-height: 400px;
+      padding: 1.5rem 2rem 2rem;
+    }
+    .acc-body ul { display: flex; flex-direction: column; gap: .75rem; }
 
     /* ── Work ── */
     #work { background: var(--bg); }
@@ -297,6 +508,9 @@
       background: var(--accent); transition: width .3s;
     }
     .project-card:hover { background: #131313; }
+    html.light .project-card { background: var(--surface); }
+    html.light .project-card:hover { background: var(--surf2); }
+    html.light .project-card:hover .stack-tag { border-color: var(--accentd); color: var(--ink); }
     .project-card:hover::before { width: 3px; }
     .project-num {
       font-size: .62rem; letter-spacing: .18em;
@@ -307,18 +521,17 @@
       color: var(--ink); margin-bottom: .5rem; line-height: 1.1;
     }
     .project-tagline {
-      font-size: .78rem; color: var(--accent);
+      font-size: .88rem; color: var(--accent);
       font-style: italic; margin-bottom: .75rem;
     }
     .project-problem {
-      font-size: .83rem; color: var(--muted);
-      line-height: 1.85; margin-bottom: 1.25rem;
-      max-width: 640px;
+      font-size: .92rem; color: var(--muted);
+      line-height: 1.9; margin-bottom: 1.25rem;
     }
     .project-stack { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.25rem; }
     .stack-tag {
-      font-size: .6rem; letter-spacing: .1em;
-      text-transform: uppercase; padding: .3rem .75rem;
+      font-size: .68rem; letter-spacing: .08em;
+      text-transform: uppercase; padding: .35rem .85rem;
       border: 1px solid var(--border); color: var(--muted);
       transition: border-color .2s, color .2s;
     }
@@ -330,37 +543,12 @@
       border: 1px solid var(--accentd); white-space: nowrap; text-align: center;
     }
     .project-link {
-      font-size: .62rem; letter-spacing: .15em;
+      font-size: .7rem; letter-spacing: .12em;
       text-transform: uppercase; color: var(--muted);
-      padding: .5rem 1rem; border: 1px solid var(--border);
+      padding: .55rem 1.1rem; border: 1px solid var(--border);
       transition: border-color .2s, color .2s; white-space: nowrap;
     }
     .project-link:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ── Currently ── */
-    #currently {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .currently-grid {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: 1px; background: var(--border);
-      border: 1px solid var(--border);
-    }
-    .currently-card {
-      background: var(--surface); padding: 2.5rem;
-      transition: background .2s;
-    }
-    .currently-card:hover { background: #161616; }
-    .curr-label {
-      font-size: .62rem; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
-    }
-    .curr-title {
-      font-family: var(--display); font-size: 1.4rem;
-      color: var(--ink); margin-bottom: 1.25rem; line-height: 1.2;
-    }
 
     /* ── Contact ── */
     #contact { background: var(--bg); }
@@ -372,8 +560,8 @@
     }
     .contact-headline em { color: var(--accent); font-style: italic; }
     .contact-sub {
-      font-size: .83rem; color: var(--muted);
-      line-height: 1.9; margin-bottom: 2rem; max-width: 340px;
+      font-size: .92rem; color: var(--muted);
+      line-height: 1.95; margin-bottom: 2rem; max-width: 340px;
     }
     .contact-links { border: 1px solid var(--border); }
     .contact-row {
@@ -384,13 +572,13 @@
       transition: padding-left .2s, background .2s;
     }
     .contact-row:last-child { border-bottom: none; }
-    .contact-row:hover { padding-left: 2rem; background: #161616; }
+    .contact-row:hover { padding-left: 2rem; background: var(--surf2); }
     .contact-row-name {
-      font-family: var(--sans); font-size: .75rem;
+      font-family: var(--sans); font-size: .82rem;
       font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; color: var(--ink);
     }
-    .contact-row-val { font-size: .72rem; color: var(--muted); transition: color .2s; }
+    .contact-row-val { font-size: .8rem; color: var(--muted); transition: color .2s; }
     .contact-row:hover .contact-row-val { color: var(--accent); }
     .contact-arrow { color: var(--accent); font-size: 1rem; }
 
@@ -400,7 +588,7 @@
       border-top: 1px solid var(--border);
       display: flex; justify-content: space-between; align-items: center;
     }
-    .footer-text { font-size: .65rem; letter-spacing: .1em; color: var(--muted); }
+    .footer-text { font-size: .72rem; letter-spacing: .08em; color: var(--muted); }
 
     /* ── Animations ── */
     @keyframes fadeUp     { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -408,22 +596,82 @@
     @keyframes blink      { 0%,100%{opacity:1} 50%{opacity:0} }
     @keyframes scrollLine { 0%{left:-100%} 100%{left:100%} }
 
+    /* ── Admin badge ── */
+    #admin-badge {
+      display: none;
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      z-index: 9990;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: .9rem 1.2rem;
+      min-width: 160px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.5);
+      animation: fadeUp .4s ease forwards;
+    }
+    #admin-badge.visible { display: block; }
+    .badge-title {
+      font-size: .58rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: .75rem; display: flex;
+      align-items: center; gap: .5rem;
+    }
+    .badge-title::before {
+      content: ''; display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: blink 2s step-end infinite;
+    }
+    .badge-row {
+      display: flex; justify-content: space-between;
+      align-items: baseline; padding: .3rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .badge-row:last-child { border-bottom: none; }
+    .badge-label { font-size: .62rem; color: var(--muted); }
+    .badge-value {
+      font-family: var(--display); font-size: 1.3rem;
+      color: var(--ink); line-height: 1;
+    }
+    .badge-loading { font-size: .65rem; color: var(--muted); text-align: center; padding: .5rem 0; }
+
+    /* ── About section (below fold) ── */
+    .about-section {
+      padding: 5rem 3rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .about-inner {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .about-list {
+      display: flex; flex-direction: column; gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       nav { padding: 1rem 1.5rem; }
       .nav-links { display: none; }
       section { padding: 4rem 1.5rem; }
-      #hero { padding: 0 1.5rem; }
-      .hero-lower { flex-direction: column; gap: 2.5rem; }
-      .hero-facts { min-width: unset; max-width: 100%; }
-      .cards-grid { grid-template-columns: 1fr; }
+      #hero { padding: 6rem 1.5rem 2rem; }
+      .hero-facts-row { flex-direction: column; align-items: center; }
       .project-card { grid-template-columns: 1fr; }
       .project-links { flex-direction: row; }
-      .currently-grid { grid-template-columns: 1fr; }
       .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
       footer { flex-direction: column; gap: .5rem; text-align: center; }
       .scroll-hint { display: none; }
     }
+
+    /* ── Light mode hover overrides ── */
+    html.light .acc-header:hover,
+    html.light .acc-header.open   { background: var(--surf2); }
+    html.light .acc-body          { background: var(--bg); }
+    html.light .contact-row:hover { background: var(--surf2); }
+    html.light .project-link:hover { border-color: var(--accent); color: var(--accent); }
+    html.light .nav-links a { color: var(--muted); }
+    html.light .nav-links a:hover { color: var(--ink); }
+    html.light .nav-logo  { color: var(--ink); }
   </style>
 </head>
 <body>
@@ -431,20 +679,30 @@
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
 
+  <!-- Admin badge (visible only via #admin hash) -->
+  <div id="admin-badge">
+    <div class="badge-title">Visitor Stats</div>
+    <div id="badge-content"><div class="badge-loading">Loading...</div></div>
+  </div>
+
   <!-- NAV -->
   <nav id="navbar">
     <a href="#hero" class="nav-logo">JN<span>.</span></a>
     <ul class="nav-links">
+      <li><a href="#about-me">About</a></li>
+      <li><a href="#playground">Live Architecture</a></li>
       <li><a href="#value">What I Bring</a></li>
       <li><a href="#work">Work</a></li>
-      <li><a href="#currently">Currently</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <button id="theme-toggle" onclick="toggleTheme()">
+      <span class="toggle-icon" id="toggle-icon">&#9788;</span>
+      <span id="toggle-label">Light</span>
+    </button>
   </nav>
 
   <!-- HERO -->
   <section id="hero">
-    <canvas id="particle-canvas"></canvas>
     <div class="hero-inner">
 
       <h1 id="hero-name"></h1>
@@ -455,51 +713,38 @@
         <span class="cursor-blink"></span>
       </div>
 
+      <div class="hero-divider"></div>
+
       <div class="hero-lower">
 
-        <!-- Bullets -->
-        <div class="hero-bullets">
-          <ul>
-            <li class="vbullet"><span>Co-founded <strong>SevaTech</strong>, led a 10-person team.</span></li>
-            <li class="vbullet"><span>Mentored 20+ students through Northeastern's Bridge to Calculus</span></li>
-            <li class="vbullet"><span>Built <strong>agentic AI systems</strong> - LLM orchestration, RAG pipelines, and runtime tool-use, not just API wrappers</span></li>
-            <li class="vbullet"><span>2.5 years shipping production code across <strong>Java/Spring Boot enterprise backends</strong> and <strong>Next.js/FastAPI product stacks</strong></span></li>
-          </ul>
-          <div class="hero-actions">
-            <a href="#work" class="btn-primary">See my work</a>
-            <a href="#contact" class="btn-ghost">Get in touch</a>
-          </div>
-        </div>
-
-        <!-- Photo + Quick facts -->
-        <div class="hero-facts">
-          <div class="hero-facts-photo">
-            <img src="images/profile.png" alt="Jovin Nicholas" class="profile-photo"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-            <div class="photo-fallback"><span>J</span></div>
-          </div>
+        <!-- Photo + Quick facts as centered row -->
+        <div class="hero-facts-row">
+          <img src="images/profile.png" alt="Jovin Nicholas" class="profile-photo"
+               onerror="this.style.display='none'" />
           <div class="facts-box">
             <div class="fact-row">
               <span class="fact-label">Degree</span>
-              <span class="fact-value">M.S. Computer Engineering, Northeastern</span>
+              <span class="fact-value">M.S. Computer Engineering, Northeastern &middot; GPA 3.8</span>
             </div>
             <div class="fact-row">
-              <span class="fact-label">Experience</span>
-              <span class="fact-value">2.5 years &middot; Full-Stack + Backend + AI</span>
-            </div>
-            <div class="fact-row">
-              <span class="fact-label">Strengths</span>
-              <span class="fact-value">AI Integration &middot; Distributed Systems &middot; End-to-End Ownership</span>
+              <span class="fact-label">Stack</span>
+              <span class="fact-value">Java &middot; Python &middot; TypeScript &middot; React &middot; AWS &middot; AI</span>
             </div>
             <div class="fact-row">
               <span class="fact-label">Open To</span>
-              <span class="fact-value">Full-time SDE &middot; Available now &middot; Open to relocation</span>
+              <span class="fact-value">Full-time SDE &middot; Available now</span>
             </div>
             <div class="fact-row">
-              <span class="fact-label">Beyond Code</span>
-              <span class="fact-value">Loves board games and sports</span>
+              <span class="fact-label">Beyond Work</span>
+              <span class="fact-value">Game nights, sports, hiking</span>
             </div>
           </div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="hero-actions">
+          <a href="#work" class="btn-primary">See my work</a>
+          <a href="#contact" class="btn-ghost">Get in touch</a>
         </div>
 
       </div>
@@ -511,51 +756,117 @@
     </div>
   </section>
 
+  <!-- ABOUT / VALUE BULLETS (below fold) -->
+  <section id="about-me" class="about-section">
+    <div class="about-inner">
+      <div class="section-label">About</div>
+      <ul class="about-list">
+        <li class="vbullet"><span>Co-founded SevaTech, <strong>led a 10-person team</strong> to build and ship an Android app for an NGO, boosting event registration by 200%</span></li>
+        <li class="vbullet"><span><strong>Mentored 20+ students</strong> through Northeastern's Bridge to Calculus, teaching fundamentals of programming</span></li>
+        <li class="vbullet"><span>Built <strong>agentic AI systems</strong> - LLM orchestration, RAG pipelines, and runtime tool-use, not just API wrappers</span></li>
+        <li class="vbullet"><span>2.5 years shipping production code across <strong>Java/Spring Boot enterprise backends</strong> and <strong>Next.js/FastAPI product stacks</strong></span></li>
+        <li class="vbullet"><span><strong>Loves debugging and fixing problems</strong> - SSO outages, WebSocket failures, undocumented APIs</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SYSTEM PLAYGROUND -->
+  <section id="playground">
+    <div id="pg-tooltip"><div class="tt-box" id="pg-tooltip-inner"></div></div>
+    <div class="playground-header">
+      <div>
+        <div class="section-label" style="margin-bottom:.4rem">Live Architecture</div>
+        <p class="playground-hint">An interactive diagram of the stack I've shipped in production. Click any node to take it down - watch the cascade.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div class="speed-controls">
+          <span class="speed-label">Speed</span>
+          <button class="btn-speed" onclick="setSpeed(0.5)" id="speed-0.5">0.5x</button>
+          <button class="btn-speed active" onclick="setSpeed(1)" id="speed-1">1x</button>
+          <button class="btn-speed" onclick="setSpeed(1.5)" id="speed-1.5">1.5x</button>
+        </div>
+        <button class="btn-reset" onclick="resetAll()">Reset All</button>
+      </div>
+    </div>
+    <div class="playground-body">
+      <canvas id="pg-canvas"></canvas>
+      <div class="terminal" id="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot td-red"></span>
+          <span class="terminal-dot td-amber"></span>
+          <span class="terminal-dot td-green"></span>
+          <span class="terminal-title">system.log</span>
+          <button class="btn-clear-term" onclick="clearTerminal()">clear</button>
+        </div>
+        <div class="terminal-lines" id="terminal-lines"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- WHAT I BRING -->
   <section id="value">
     <div class="section-label">What I Bring</div>
     <h2 class="section-title reveal">How I add value.</h2>
 
-    <div class="cards-grid">
-      <div class="value-card reveal d1">
-        <div class="card-label">AI + Product Engineering</div>
-        <ul>
-          <li class="vbullet"><span>Chose <strong>RAG over fine-tuning</strong> at Health Innovators -- domain required grounding in live clinical data, not baked-in memorization. Achieved <strong>90% accuracy improvement</strong> over GPT-4o baseline</span></li>
-          <li class="vbullet"><span>Built an <strong>agentic NLP pipeline using Gemini function calling</strong> -- cut clinical review time from <strong>15 min to 2-3 min per record</strong></span></li>
-          <li class="vbullet"><span>Engineered a <strong>WebSocket adapter</strong> connecting Next.js to Python FastAPI, achieving sub-500ms latency -- because streamText cannot natively talk to custom Python backends</span></li>
-          <li class="vbullet"><span>Holds <strong>Anthropic MCP</strong> and <strong>Oracle Cloud Infrastructure GenAI</strong> certifications (2025)</span></li>
-        </ul>
+    <div class="accordion reveal">
+
+      <!-- Full-Stack Development -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <span class="acc-title">Full-Stack Development</span>
+          <span class="acc-icon">+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li class="vbullet"><span>Built a custom <strong>WebSocket adapter</strong> bridging a Next.js frontend to a Python FastAPI backend - because standard streaming APIs can't talk to custom Python backends.</span></li>
+            <li class="vbullet"><span>Won <strong>Best Innovation at Hack NUACM 2025</strong> - built and deployed a full AI platform in 24 hours.</span></li>
+          </ul>
+        </div>
       </div>
 
-      <div class="value-card reveal d2">
-        <div class="card-label">Backend Systems</div>
-        <ul>
-          <li class="vbullet"><span>2 years building <strong>Java + Spring Boot</strong> services at LTM -- checkout flows, enterprise portals, internal tooling for <strong>5,000+ users</strong></span></li>
-          <li class="vbullet"><span>Improved <strong>transaction completion rate by 25%</strong> by rearchitecting a 7-step SOAP API checkout chain with proper error handling</span></li>
-          <li class="vbullet"><span>Reverse-engineered undocumented vendor SOAP APIs and wrote documentation that reduced onboarding from <strong>2 weeks to 3 days</strong></span></li>
-          <li class="vbullet"><span>Volunteered to own a critical <strong>WSO2 SSO outage</strong> -- traced root cause to Nginx proxy header forwarding breaking OAuth2 callback routing, restored auth and unblocked go-live</span></li>
-        </ul>
+      <!-- AI + Product Engineering -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <span class="acc-title">AI + Product Engineering</span>
+          <span class="acc-icon">+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li class="vbullet"><span>Chose <strong>RAG over fine-tuning</strong> at Health Innovators - grounding in live clinical data, not memorization. Achieved <strong>90% accuracy improvement</strong> over GPT-4o baseline</span></li>
+            <li class="vbullet"><span>Built an <strong>agentic NLP pipeline using Gemini function calling</strong> - cut clinical review from <strong>15 min to 2-3 min per record</strong></span></li>
+            <li class="vbullet"><span><strong>Holds Anthropic MCP and Oracle GenAI Professional certifications (2025)</strong></span></li>
+          </ul>
+        </div>
       </div>
 
-      <div class="value-card reveal d3">
-        <div class="card-label">Full-Stack Development</div>
-        <ul>
-          <li class="vbullet"><span>Production experience with <strong>Next.js, TypeScript, FastAPI, React, Node.js</strong> -- comfortable owning both API layer and UI</span></li>
-          <li class="vbullet"><span>Won <strong>Best Innovation at Hack NUACM 2025</strong> -- designed, built, and deployed a full AI-powered platform in 24 hours with a team of 3</span></li>
-          <li class="vbullet"><span>Published <strong>IEEE research paper</strong> on ML-based student employability prediction (2021)</span></li>
-          <li class="vbullet"><span>Comfortable shipping across the entire stack: REST APIs, database schemas, UI components, CI/CD pipelines</span></li>
-        </ul>
+      <!-- Backend Systems -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <span class="acc-title">Backend Systems</span>
+          <span class="acc-icon">+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li class="vbullet"><span>Rearchitected a 7-step SOAP API checkout chain at LTM that had no retry logic and silently dropped failed pricing calls - drove a <strong>25% transaction completion improvement</strong> for 5,000+ users</span></li>
+            <li class="vbullet"><span>Volunteered to own a critical <strong>WSO2 SSO outage</strong> - traced Nginx proxy misconfiguration breaking OAuth2 callbacks, restored auth, unblocked go-live</span></li>
+          </ul>
+        </div>
       </div>
 
-      <div class="value-card reveal d4">
-        <div class="card-label">Cloud + Infrastructure</div>
-        <ul>
-          <li class="vbullet"><span>Deployed multi-container apps on <strong>AWS ECS Fargate across 4 AZs</strong> -- ALB for HTTP/WebSocket (L7), NLB for Redis (L4) to minimize protocol overhead</span></li>
-          <li class="vbullet"><span>Set up <strong>CodeBuild CI/CD</strong> with zero-downtime rolling deploys, reducing deployment time by 50%</span></li>
-          <li class="vbullet"><span>Debugged <strong>ALB WebSocket upgrade silent failures</strong> -- ALB listener rules must explicitly enable WebSocket support; absence causes silent drops, not errors</span></li>
-          <li class="vbullet"><span>Hands-on with <strong>Docker, Kubernetes, Terraform, Redis pub/sub, RabbitMQ, Elasticsearch</strong></span></li>
-        </ul>
+      <!-- Cloud + Infrastructure -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <span class="acc-title">Cloud + Infrastructure</span>
+          <span class="acc-icon">+</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li class="vbullet"><span>Deployed on <strong>AWS ECS Fargate across 4 AZs</strong> - ALB/NLB layer separation, zero-downtime CodeBuild CI/CD</span></li>
+            <li class="vbullet"><span>Automated <strong>Docker</strong> image builds and ECR deployments via GitHub Actions pipeline, eliminated manual deployment entirely</span></li>
+          </ul>
+        </div>
       </div>
+
     </div>
   </section>
 
@@ -572,20 +883,19 @@
           <div class="project-num">01 / 04</div>
           <h3 class="project-title">nuk.ai</h3>
           <div class="project-tagline">Won Best Innovation at Hack NUACM 2025. Built and shipped in 24 hours.</div>
-          <p class="project-problem">Students had no way to know if the library was full before making the trip. I built a real-time occupancy platform that predicts crowding before it happens and lets students query availability in plain English.</p>
+          <p class="project-problem">Students spent time manually searching for a seat in the overcrowded library. I built a real-time occupancy platform that predicts crowding and lets students query availability in plain English.</p>
           <ul>
-            <li class="vbullet"><span>Meta Prophet forecasts capacity from IoT sensor streams -- students see predicted occupancy, not just current</span></li>
+            <li class="vbullet"><span>Meta Prophet forecasts capacity from simulated IoT sensor streams - students see predicted occupancy, not just current</span></li>
             <li class="vbullet"><span>Gemini-2.0-Flash chatbot answers natural-language seat queries against live Supabase data</span></li>
-            <li class="vbullet"><span>Deployed full-stack on Render within the 24-hour window, serving <strong>3,000+ students</strong></span></li>
+            <li class="vbullet"><span>Deployed full-stack on Render within the 24-hour window, serving 3,000+ students</span></li>
           </ul>
           <div class="project-stack">
             <span class="stack-tag">Next.js</span><span class="stack-tag">FastAPI</span>
-            <span class="stack-tag">Gemini 2.0</span><span class="stack-tag">Supabase</span>
+            <span class="stack-tag">Gemini</span><span class="stack-tag">Supabase</span>
             <span class="stack-tag">Meta Prophet</span>
           </div>
         </div>
         <div class="project-links">
-          <div class="project-award">Best Innovation</div>
           <a href="https://github.com/jovin-nicholas/nuk-ai" target="_blank" class="project-link">GitHub &#8599;</a>
         </div>
       </div>
@@ -599,7 +909,7 @@
           <p class="project-problem">Real-time multiplayer requires consistent low-latency state across every connected client. I built the full backend and infrastructure to handle live player sync, high availability, and zero-downtime deployments.</p>
           <ul>
             <li class="vbullet"><span>Redis pub/sub syncs player state across containers in real time</span></li>
-            <li class="vbullet"><span>Deployed on <strong>AWS ECS Fargate across 4 AZs</strong> -- ALB for HTTP/WebSocket, NLB for Redis to minimize protocol overhead</span></li>
+            <li class="vbullet"><span>Deployed on <strong>AWS ECS Fargate across 4 AZs</strong> - ALB for HTTP/WebSocket, NLB for Redis to minimize protocol overhead</span></li>
             <li class="vbullet"><span>CodeBuild CI/CD delivers zero-downtime rolling deploys, <strong>50% faster</strong> than manual process</span></li>
           </ul>
           <div class="project-stack">
@@ -619,7 +929,7 @@
           <div class="project-num">03 / 04</div>
           <h3 class="project-title">JSON Schema Registry</h3>
           <div class="project-tagline">Event-driven backend built to stay fast under write-heavy load.</div>
-          <p class="project-problem">Schema registries need fast reads for search and reliable writes for storage -- but coupling them means write spikes hurt search performance. I decoupled them with async queuing so each concern scales independently.</p>
+          <p class="project-problem">Schema registries need fast reads for search and reliable writes for storage - but coupling them means write spikes hurt search performance. I decoupled them with async queuing so each concern scales independently.</p>
           <ul>
             <li class="vbullet"><span>RabbitMQ queues writes asynchronously so Elasticsearch indexing never blocks the write path</span></li>
             <li class="vbullet"><span>Full CRUD on Redis for low-latency schema retrieval, parent-child Elasticsearch indexing for search</span></li>
@@ -642,7 +952,7 @@
           <div class="project-num">04 / 04</div>
           <h3 class="project-title">SafeDine</h3>
           <div class="project-tagline">Turned messy city open data into a usable, accurate restaurant safety tool.</div>
-          <p class="project-problem">Boston's public health violation data is fragmented and full of duplicates -- restaurants appear under multiple names and addresses. I built a pipeline to clean, deduplicate, and enrich it into something people could actually use.</p>
+          <p class="project-problem">Boston's public health violation data is fragmented and full of duplicates - restaurants appear under multiple names and addresses. I built a pipeline to clean, deduplicate, and enrich it into something people could actually use.</p>
           <ul>
             <li class="vbullet"><span>MongoDB aggregation pipeline deduplicates records and enriches via Google Places API cross-validation</span></li>
             <li class="vbullet"><span>Achieved <strong>98% data accuracy</strong> through entity matching and multi-source reconciliation</span></li>
@@ -662,58 +972,19 @@
     </div>
   </section>
 
-  <!-- CURRENTLY -->
-  <section id="currently">
-    <div class="section-label">Currently</div>
-    <h2 class="section-title reveal">What I'm into right now.</h2>
-    <div class="currently-grid">
-
-      <div class="currently-card reveal d1">
-        <div class="curr-label">Building</div>
-        <div class="curr-title">Agentic AI Systems</div>
-        <ul>
-          <li class="vbullet"><span>Exploring pipelines where LLMs make runtime tool decisions, not just generate text</span></li>
-          <li class="vbullet"><span>Anthropic MCP Certification (2025) -- hands-on with standardized tool-use for LLM agents</span></li>
-          <li class="vbullet"><span>Oracle Cloud Infrastructure GenAI Professional Certification (2025)</span></li>
-        </ul>
-      </div>
-
-      <div class="currently-card reveal d2">
-        <div class="curr-label">Recognition</div>
-        <div class="curr-title">Recent Wins</div>
-        <ul>
-          <li class="vbullet"><span>Best Innovation Award -- Hack NUACM 2025 (nuk.ai)</span></li>
-          <li class="vbullet"><span>Published IEEE paper -- ML-Based Student Employability Predictor (2021)</span></li>
-          <li class="vbullet"><span>Mentored 20+ students through Northeastern's Bridge to Calculus program</span></li>
-        </ul>
-      </div>
-
-      <div class="currently-card reveal d3">
-        <div class="curr-label">Open To</div>
-        <div class="curr-title">SDE Roles</div>
-        <ul>
-          <li class="vbullet"><span>Full-time, available immediately</span></li>
-          <li class="vbullet"><span>Best fit: teams building with AI, real-time systems, or complex backend infrastructure</span></li>
-          <li class="vbullet"><span>Series A-C startups, mid-size tech, and big tech -- open to all</span></li>
-        </ul>
-      </div>
-
-    </div>
-  </section>
-
   <!-- CONTACT -->
   <section id="contact">
     <div class="section-label">Contact</div>
     <div class="contact-grid">
       <div class="reveal">
         <h2 class="contact-headline">Let's build<br/><em>something</em><br/>together.</h2>
-        <p class="contact-sub">Open to new roles, collaborations, and interesting engineering problems. If something resonates, reach out directly.</p>
-        <a href="/cdn-cgi/l/email-protection#741e1b021d1a44464145341319151d185a171b19" class="btn-primary">Send a message</a>
+        <p class="contact-sub">If something resonates, reach out directly.</p>
+        <a href="mailto:jovin0251@gmail.com" class="btn-primary">Send a message</a>
       </div>
       <div class="contact-links reveal d2">
-        <a href="/cdn-cgi/l/email-protection#22484d544b4c1210171362454f434b4e0c414d4f" class="contact-row">
+        <a href="mailto:jovin0251@gmail.com" class="contact-row">
           <span class="contact-row-name">Email</span>
-          <span class="contact-row-val"><span class="__cf_email__" data-cfemail="2d47425b44431d1f181c6d4a404c4441034e4240">[email&#160;protected]</span></span>
+          <span class="contact-row-val">&nbsp; jovin0251@gmail.com</span>
           <span class="contact-arrow">&#8599;</span>
         </a>
         <a href="https://linkedin.com/in/jovin-nicholas" target="_blank" class="contact-row">
@@ -723,7 +994,7 @@
         </a>
         <a href="https://github.com/jovin-nicholas" target="_blank" class="contact-row">
           <span class="contact-row-name">GitHub</span>
-          <span class="contact-row-val">jovin-nicholas</span>
+          <span class="contact-row-val">&nbsp; jovin-nicholas</span>
           <span class="contact-arrow">&#8599;</span>
         </a>
       </div>
@@ -783,62 +1054,871 @@
     }
     setTimeout(type, 1400);
 
-    // ── Particles ───────────────────────────────────────────────────
-    const canvas = document.getElementById('particle-canvas');
-    const ctx    = canvas.getContext('2d');
-    let W, H, mouse = { x:-9999, y:-9999 };
-    const N=90, CD=130, MR=180;
-    function resize(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=canvas.offsetHeight; }
-    resize();
-    window.addEventListener('resize', resize);
-    document.addEventListener('mousemove', e => {
-      const r = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
-    });
-    class P {
-      constructor(){ this.init(); }
-      init(){
-        this.x=Math.random()*W; this.y=Math.random()*H;
-        this.vx=(Math.random()-.5)*.35; this.vy=(Math.random()-.5)*.35;
-        this.r=Math.random()*1.8+.6; this.a=Math.random()*.5+.2;
+    // ── System Playground ─────────────────────────────────────────────
+    const pgCanvas = document.getElementById('pg-canvas');
+    const pgCtx    = pgCanvas.getContext('2d');
+    let PW, PH;
+
+    // ── Node definitions ──────────────────────────────────────────────
+    // Architecture mirrors Jovin's confirmed stack:
+    // Browser → ALB → Next.js / Spring Boot → FastAPI → Redis / PostgreSQL / RabbitMQ / pgvector / Supabase
+    // RabbitMQ → Elasticsearch (async indexing)
+    // ALB → CloudWatch (passive metrics push, not app traffic)
+    const NODE_DEFS = [
+      { id:'client',     label:'Browser',      sublabel:'Client',    col:.04, row:.50, tier:0 },
+      { id:'alb',        label:'ALB',          sublabel:'Gateway',   col:.16, row:.50, tier:1 },
+      { id:'nextjs',     label:'Next.js',       sublabel:'Frontend',  col:.30, row:.25, tier:2 },
+      { id:'spring',     label:'Spring Boot',  sublabel:'Backend',   col:.30, row:.75, tier:2 },
+      { id:'fastapi',    label:'FastAPI',       sublabel:'API',       col:.44, row:.50, tier:3 },
+      { id:'redis',      label:'Redis',         sublabel:'Cache',     col:.60, row:.12, tier:4 },
+      { id:'postgres',   label:'PostgreSQL',    sublabel:'Database',  col:.60, row:.36, tier:4 },
+      { id:'rabbitmq',   label:'RabbitMQ',      sublabel:'Queue',     col:.60, row:.60, tier:4 },
+      { id:'pgvector',   label:'pgvector',      sublabel:'Vector DB', col:.60, row:.84, tier:4 },
+      { id:'elastic',    label:'Elasticsearch', sublabel:'Search',    col:.76, row:.28, tier:5 },
+      { id:'supabase',   label:'Supabase',      sublabel:'Realtime',  col:.76, row:.60, tier:5 },
+      { id:'cloudwatch', label:'CloudWatch',    sublabel:'Monitor',   col:.90, row:.44, tier:6 },
+    ];
+
+    // Tier accent colors
+    const TIER_COLORS = ['#888','#d4a847','#c09030','#a07828','#7a5c20','#5a4218','#444'];
+
+    // ── Edges ─────────────────────────────────────────────────────────
+    const EDGES = [
+      { from:'client',   to:'alb',        bidi:true  },
+      { from:'alb',      to:'nextjs',     bidi:true  },
+      { from:'alb',      to:'spring',     bidi:true  },
+      { from:'nextjs',   to:'fastapi',    bidi:true  },  // Next.js API routes → FastAPI
+      { from:'spring',   to:'postgres',   bidi:true  },  // Spring Boot → PostgreSQL (checkout, user data)
+      { from:'spring',   to:'rabbitmq',   bidi:false },  // Spring Boot publishes to queue
+      { from:'fastapi',  to:'redis',      bidi:true  },  // FastAPI reads/writes cache
+      { from:'fastapi',  to:'postgres',   bidi:true  },  // FastAPI reads/writes user data
+      { from:'fastapi',  to:'rabbitmq',   bidi:false },  // FastAPI publishes schema writes to queue
+      { from:'fastapi',  to:'pgvector',   bidi:true  },  // FastAPI runs RAG vector similarity search
+      { from:'fastapi',  to:'supabase',   bidi:true  },  // FastAPI reads live occupancy data (nuk.ai)
+      { from:'rabbitmq', to:'elastic',    bidi:false },  // Queue drains writes to Elasticsearch index
+      { from:'fastapi',  to:'elastic',    bidi:true  },  // FastAPI queries search directly
+      { from:'alb',      to:'cloudwatch', bidi:false },  // ALB pushes access logs/metrics passively
+    ];
+
+    // ── Cascade rules ─────────────────────────────────────────────────
+    const CASCADE = {
+      fastapi: {
+        affects: ['redis','postgres','rabbitmq','pgvector','supabase','elastic'],
+        msg: 'FastAPI DOWN -- cache, DB, queue, vector search and realtime all unreachable'
+      },
+      alb: {
+        affects: ['nextjs','spring','fastapi','redis','postgres','rabbitmq','pgvector','supabase','elastic','cloudwatch'],
+        msg: 'ALB DOWN -- all traffic blocked -- nothing reaches any service'
+      },
+      rabbitmq: {
+        affects: ['elastic'],
+        msg: 'RabbitMQ DOWN -- async queue blocked -- Elasticsearch index going stale'
+      },
+      redis: {
+        affects: [],
+        msg: 'Redis DOWN -- cache misses -- latency spike on all FastAPI reads'
+      },
+      postgres: {
+        affects: [],
+        msg: 'PostgreSQL DOWN -- checkout and user endpoints returning 500'
+      },
+      pgvector: {
+        affects: [],
+        msg: 'pgvector DOWN -- RAG queries failing -- vector similarity search unavailable'
+      },
+      supabase: {
+        affects: [],
+        msg: 'Supabase DOWN -- realtime occupancy data unavailable -- nuk.ai chatbot degraded'
+      },
+      cloudwatch: {
+        affects: [],
+        msg: 'CloudWatch DOWN -- monitoring blind -- ALB metrics and alerts not reaching ops'
+      },
+    };
+
+    // ── Upstream dependencies ─────────────────────────────────────────
+    // Spring Boot and Next.js are PARALLEL backends -- they do not call each other.
+    // FastAPI is only called by Next.js (API routes proxy). Spring Boot calls DBs directly.
+    // CloudWatch is passive -- ALB pushes metrics to it, it does not serve app traffic.
+    const UPSTREAM = {
+      client:     [],
+      alb:        ['client'],
+      nextjs:     ['alb'],
+      spring:     ['alb'],
+      fastapi:    ['nextjs'],          // only Next.js routes to FastAPI
+      redis:      ['fastapi'],
+      postgres:   ['fastapi', 'spring'],
+      rabbitmq:   ['fastapi', 'spring'],
+      pgvector:   ['fastapi'],
+      elastic:    ['fastapi', 'rabbitmq'],
+      supabase:   ['fastapi'],
+      cloudwatch: ['alb'],             // passive -- ALB push only, not app traffic
+    };
+
+    // Compute which nodes are currently reachable given downSet.
+    // A node is reachable if:
+    //   1. It is not in downSet
+    //   2. It has no upstream (client) OR at least one upstream node is reachable
+    function computeReachable() {
+      const reachable = new Set();
+      const visited   = new Set();
+
+      function check(id) {
+        if (visited.has(id)) return reachable.has(id);
+        visited.add(id);
+        if (downSet.has(id)) return false;
+        const ups = UPSTREAM[id] || [];
+        const ok  = ups.length === 0 || ups.some(u => check(u));
+        if (ok) reachable.add(id);
+        return ok;
       }
-      update(){
-        const dx=this.x-mouse.x, dy=this.y-mouse.y, d=Math.sqrt(dx*dx+dy*dy);
-        if(d<MR){ const f=(MR-d)/MR; this.vx+=(dx/d)*f*.6; this.vy+=(dy/d)*f*.6; }
-        this.vx*=.98; this.vy*=.98;
-        this.x+=this.vx; this.y+=this.vy;
-        if(this.x<0||this.x>W) this.vx*=-1;
-        if(this.y<0||this.y>H) this.vy*=-1;
-        this.x=Math.max(0,Math.min(W,this.x));
-        this.y=Math.max(0,Math.min(H,this.y));
-      }
-      draw(){
-        ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
-        ctx.fillStyle=`rgba(212,168,71,${this.a})`; ctx.fill();
-      }
+
+      NODE_DEFS.forEach(def => check(def.id));
+      return reachable;
     }
-    const pts = Array.from({length:N},()=>new P());
-    function drawLines(){
-      for(let i=0;i<pts.length;i++){
-        for(let j=i+1;j<pts.length;j++){
-          const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
-          if(d<CD){
-            ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
-            ctx.strokeStyle=`rgba(212,168,71,${(1-d/CD)*.18})`; ctx.lineWidth=.8; ctx.stroke();
+
+    const SC = { ok:'#4caf50', slow:'#d4a847', err:'#e53935', down:'#333' };
+
+    // ── Tooltip metadata ──────────────────────────────────────────────
+    const NODE_META = {
+      client:     { desc: 'Originates all requests. Browser-side React/Next.js UI.' },
+      alb:        { desc: 'AWS Application Load Balancer. Routes HTTP/WebSocket traffic to Next.js and Spring Boot containers on ECS Fargate.' },
+      nextjs:     { desc: 'Next.js frontend and API proxy layer. Serves the React UI and routes API calls to FastAPI.' },
+      spring:     { desc: 'Spring Boot backend. Owns checkout flows, user data, and enterprise portal services. Calls PostgreSQL and RabbitMQ directly.' },
+      fastapi:    { desc: 'Python FastAPI. Handles RAG queries, WebSocket streaming, schema registry writes, and AI pipeline orchestration.' },
+      redis:      { desc: 'Redis cache. FastAPI reads from here first before hitting PostgreSQL. Cache miss = latency spike.' },
+      postgres:   { desc: 'PostgreSQL. Primary relational store for user data and checkout. Also hosts pgvector extension for RAG embeddings.' },
+      rabbitmq:   { desc: 'RabbitMQ message queue. Decouples schema writes from Elasticsearch indexing so write spikes do not degrade search.' },
+      pgvector:   { desc: 'pgvector extension on PostgreSQL. Stores and queries vector embeddings for RAG similarity search. Used in Health Innovators clinical chatbot.' },
+      elastic:    { desc: 'Elasticsearch. Full-text and structured search for the JSON Schema Registry. Fed asynchronously by RabbitMQ.' },
+      supabase:   { desc: 'Supabase realtime database. Stores live library occupancy data for nuk.ai. FastAPI chatbot reads from here to answer seat queries.' },
+      cloudwatch: { desc: 'AWS CloudWatch. Receives ALB access logs and ECS container metrics passively. Not in the app request path -- ops visibility only.' },
+    };
+
+    const EDGE_META = {
+      'client→alb':       'HTTP/WebSocket requests from browser to load balancer',
+      'alb→nextjs':       'ALB routes frontend traffic to Next.js container',
+      'alb→spring':       'ALB routes backend traffic to Spring Boot container',
+      'nextjs→fastapi':   'Next.js proxies API calls to FastAPI (RAG, auth, schema)',
+      'spring→postgres':  'Spring Boot reads/writes checkout and user data',
+      'spring→rabbitmq':  'Spring Boot publishes domain events to queue',
+      'fastapi→redis':    'FastAPI checks cache before hitting database',
+      'fastapi→postgres': 'FastAPI reads/writes user and schema data',
+      'fastapi→rabbitmq': 'FastAPI queues schema writes for async Elasticsearch indexing',
+      'fastapi→pgvector': 'FastAPI runs vector similarity search for RAG pipeline',
+      'fastapi→supabase': 'FastAPI reads live occupancy data for nuk.ai chatbot',
+      'fastapi→elastic':  'FastAPI queries Elasticsearch for schema search',
+      'rabbitmq→elastic': 'RabbitMQ drains write queue into Elasticsearch index',
+      'alb→cloudwatch':   'ALB pushes access logs and metrics passively -- no app traffic',
+    };
+
+    // ── State ─────────────────────────────────────────────────────────
+    let nodes    = {};
+    let packets  = [];
+    let downSet  = new Set();   // node ids that are currently down
+
+    function initNodes() {
+      nodes = {};
+      NODE_DEFS.forEach(def => {
+        nodes[def.id] = {
+          ...def,
+          x:     def.col * PW,
+          y:     def.row * PH,
+          color: TIER_COLORS[def.tier] || '#666',
+          pulse: 0,
+          errPulse: 0,
+        };
+      });
+    }
+
+    function pgResize() {
+      PW = pgCanvas.width  = pgCanvas.offsetWidth;
+      PH = pgCanvas.height = pgCanvas.offsetHeight;
+      initNodes();
+    }
+    window.addEventListener('resize', pgResize);
+
+    // ── Terminal log ──────────────────────────────────────────────────
+    const termLines = document.getElementById('terminal-lines');
+
+    function termLog(text, cls) {
+      const now = new Date();
+      const ts  = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}.${String(now.getMilliseconds()).padStart(3,'0')}`;
+      const el  = document.createElement('div');
+      el.className = `t-line ${cls}`;
+      el.textContent = `[${ts}]  ${text}`;
+      termLines.appendChild(el);
+      // Keep last 40 lines max
+      while (termLines.children.length > 40) termLines.removeChild(termLines.firstChild);
+      // Only autoscroll on errors -- reduces DOM thrash on healthy traffic
+      if (cls === 't-err') termLines.scrollTop = termLines.scrollHeight;
+    }
+
+    // Boot messages
+    setTimeout(() => termLog('Live architecture initialised -- all nodes healthy', 't-ok'),   400);
+    setTimeout(() => termLog('Traffic routing active -- monitoring enabled',        't-ok'),   900);
+    setTimeout(() => termLog('Click any node to simulate a failure',                't-info'), 1400);
+
+    // ── Click to toggle node ──────────────────────────────────────────
+    pgCanvas.addEventListener('click', e => {
+      hideTooltip();
+      const rect = pgCanvas.getBoundingClientRect();
+      const mx   = e.clientX - rect.left;
+      const my   = e.clientY - rect.top;
+      const HIT  = 18;
+
+      NODE_DEFS.forEach(def => {
+        const n = nodes[def.id];
+        if (!n) return;
+        const dx = mx - n.x, dy = my - n.y;
+        if (Math.sqrt(dx*dx + dy*dy) < HIT) {
+          if (downSet.has(def.id)) {
+            // Bring back up
+            downSet.delete(def.id);
+            recomputeDegraded();
+            termLog(`${def.label} RESTORED -- service back online`, 't-ok');
+            const rule = CASCADE[def.id];
+            if (rule) {
+              rule.affects.forEach(a => {
+                if (!downSet.has(a)) termLog(`  ${nodes[a]?.label || a} recovering...`, 't-warn');
+              });
+            }
+          } else {
+            // Take down
+            downSet.add(def.id);
+            recomputeDegraded();
+            termLog(`${def.label} DOWN -- node offline`, 't-err');
+            const rule = CASCADE[def.id];
+            if (rule) {
+              termLog(`  CASCADE: ${rule.msg}`, 't-err');
+              rule.affects.forEach(a => {
+                termLog(`  ${nodes[a]?.label || a} -- DEGRADED`, 't-warn');
+              });
+            }
+            n.errPulse = 1;
           }
         }
-        const mdx=pts[i].x-mouse.x, mdy=pts[i].y-mouse.y, md=Math.sqrt(mdx*mdx+mdy*mdy);
-        if(md<MR){
-          ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(mouse.x,mouse.y);
-          ctx.strokeStyle=`rgba(212,168,71,${(1-md/MR)*.35})`; ctx.lineWidth=.8; ctx.stroke();
+      });
+    });
+
+    // Pointer cursor on hover
+    // ── Tooltip ───────────────────────────────────────────────────────
+    const pgTooltip      = document.getElementById('pg-tooltip');
+    const pgTooltipInner = document.getElementById('pg-tooltip-inner');
+    let ttTimer  = null;
+    let ttTarget = null;   // current hovered node/edge id
+
+    function showTooltip(content, x, y) {
+      pgTooltipInner.innerHTML = content;
+      // Position: offset from cursor, flip if near right/bottom edge
+      const TW = 250, TH = 160;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      let left = x + 16, top = y + 16;
+      if (left + TW > vw - 8) left = x - TW - 8;
+      if (top  + TH > vh - 8) top  = y - TH - 8;
+      pgTooltip.style.left = left + 'px';
+      pgTooltip.style.top  = top  + 'px';
+      pgTooltip.classList.add('visible');
+    }
+
+    function hideTooltip() {
+      clearTimeout(ttTimer);
+      ttTimer  = null;
+      ttTarget = null;
+      pgTooltip.classList.remove('visible');
+    }
+
+    function buildNodeTooltip(def) {
+      const reachable = computeReachable();
+      const isDown    = downSet.has(def.id);
+      const isUnreach = !reachable.has(def.id) && !isDown;
+      const meta      = NODE_META[def.id] || {};
+
+      let statusClass, dotClass, statusText;
+      if (isDown)    { statusClass='tt-status-down'; dotClass='tt-dot-down'; statusText='DOWN'; }
+      else if (isUnreach) { statusClass='tt-status-deg'; dotClass='tt-dot-deg'; statusText='UNREACHABLE'; }
+      else           { statusClass='tt-status-ok';   dotClass='tt-dot-ok';   statusText='HEALTHY'; }
+
+      // Cascade impact if node goes down
+      const rule = CASCADE[def.id];
+      let cascadeHtml = '';
+      if (rule && !isDown) {
+        cascadeHtml = `<div class="tt-cascade">If taken down: ${rule.msg}</div>`;
+      } else if (isDown && rule && rule.affects.length > 0) {
+        cascadeHtml = `<div class="tt-cascade">Affecting: ${rule.affects.map(a => nodes[a]?.label || a).join(', ')}</div>`;
+      }
+
+      return `
+        <div class="tt-status ${statusClass}">
+          <span class="tt-dot ${dotClass}"></span>${statusText}
+        </div>
+        <div class="tt-name">${def.label}</div>
+        <div class="tt-role">${def.sublabel}</div>
+        <div class="tt-desc">${meta.desc || ''}</div>
+        ${cascadeHtml}`;
+    }
+
+    function buildEdgeTooltip(edgeKey) {
+      const desc = EDGE_META[edgeKey] || '';
+      const [fromId, toId] = edgeKey.split('→');
+      const fromLabel = nodes[fromId]?.label || fromId;
+      const toLabel   = nodes[toId]?.label   || toId;
+      return `
+        <div class="tt-role" style="margin-bottom:.4rem">${fromLabel} → ${toLabel}</div>
+        <div class="tt-edge">${desc}</div>`;
+    }
+
+    function getHoveredTarget(mx, my) {
+      const NODE_HIT = 18;
+      const EDGE_HIT = 7;
+      // Check nodes first
+      for (const def of NODE_DEFS) {
+        const n = nodes[def.id];
+        if (!n) continue;
+        const dx = mx - n.x, dy = my - n.y;
+        if (Math.sqrt(dx*dx + dy*dy) < NODE_HIT) return { type:'node', def };
+      }
+      // Check edges
+      for (const edge of EDGES) {
+        const f = nodes[edge.from], t = nodes[edge.to];
+        if (!f || !t) continue;
+        // Distance from point to line segment
+        const dx = t.x - f.x, dy = t.y - f.y;
+        const len2 = dx*dx + dy*dy;
+        if (len2 === 0) continue;
+        const param = Math.max(0, Math.min(1, ((mx-f.x)*dx + (my-f.y)*dy) / len2));
+        const px = f.x + param*dx - mx, py = f.y + param*dy - my;
+        if (Math.sqrt(px*px + py*py) < EDGE_HIT) {
+          return { type:'edge', key:`${edge.from}→${edge.to}` };
         }
       }
+      return null;
     }
-    (function anim(){ ctx.clearRect(0,0,W,H); pts.forEach(p=>{p.update();p.draw();}); drawLines(); requestAnimationFrame(anim); })();
+
+    pgCanvas.addEventListener('mousemove', e => {
+      const rect = pgCanvas.getBoundingClientRect();
+      const mx   = e.clientX - rect.left;
+      const my   = e.clientY - rect.top;
+
+      const target = getHoveredTarget(mx, my);
+      pgCanvas.style.cursor = (target && target.type === 'node') ? 'pointer' : 'default';
+
+      const targetId = target ? (target.def?.id || target.key) : null;
+
+      if (targetId !== ttTarget) {
+        hideTooltip();
+        ttTarget = targetId;
+        if (target) {
+          ttTimer = setTimeout(() => {
+            const content = target.type === 'node'
+              ? buildNodeTooltip(target.def)
+              : buildEdgeTooltip(target.key);
+            showTooltip(content, e.clientX, e.clientY);
+          }, 200);
+        }
+      } else if (pgTooltip.classList.contains('visible')) {
+        // Update position as mouse moves over same target
+        const TW = 250, TH = 160;
+        const vw = window.innerWidth, vh = window.innerHeight;
+        let left = e.clientX + 16, top = e.clientY + 16;
+        if (left + TW > vw - 8) left = e.clientX - TW - 8;
+        if (top  + TH > vh - 8) top  = e.clientY - TH - 8;
+        pgTooltip.style.left = left + 'px';
+        pgTooltip.style.top  = top  + 'px';
+      }
+    });
+
+    pgCanvas.addEventListener('mouseleave', hideTooltip);
+
+    // ── Reset all ────────────────────────────────────────────────────
+    function clearTerminal() {
+      termLines.innerHTML = '';
+    }
+
+    function resetAll() {
+      downSet.clear();
+      packets = [];
+      clearTerminal();
+      termLog('-- RESET -- all nodes restored', 't-ok');
+    }
+
+    // ── Packet spawning ───────────────────────────────────────────────
+    // ── Request paths -- all originate at client ──────────────────────
+    // Reflects actual confirmed stack. Spring Boot calls DBs directly.
+    // FastAPI is called via Next.js proxy only.
+    const REQUEST_PATHS = [
+      // Next.js → FastAPI → Redis (cache hit)
+      { hops:['client','alb','nextjs','fastapi','redis'],            method:'GET',  path:'/api/occupancy',  status:200, ms:42  },
+      // Next.js → FastAPI → PostgreSQL (user data)
+      { hops:['client','alb','nextjs','fastapi','postgres'],         method:'GET',  path:'/users/me',        status:200, ms:31  },
+      // Next.js → FastAPI → PostgreSQL (auth)
+      { hops:['client','alb','nextjs','fastapi','postgres'],         method:'POST', path:'/auth/token',      status:200, ms:23  },
+      // Spring Boot → PostgreSQL (checkout -- Spring owns this directly)
+      { hops:['client','alb','spring','postgres'],                   method:'POST', path:'/checkout',        status:200, ms:134 },
+      // Spring Boot → RabbitMQ (publish event)
+      { hops:['client','alb','spring','rabbitmq'],                   method:'POST', path:'/events/publish',  status:201, ms:55  },
+      // Next.js → FastAPI → RabbitMQ → (schema write queued)
+      { hops:['client','alb','nextjs','fastapi','rabbitmq'],         method:'POST', path:'/schema',          status:201, ms:89  },
+      // Next.js → FastAPI → Elasticsearch (search query)
+      { hops:['client','alb','nextjs','fastapi','elastic'],          method:'GET',  path:'/search',          status:200, ms:67  },
+      // Next.js → FastAPI → pgvector (RAG vector similarity)
+      { hops:['client','alb','nextjs','fastapi','pgvector'],         method:'POST', path:'/rag/query',        status:200, ms:512 },
+      // Next.js → FastAPI → Supabase (live occupancy data)
+      { hops:['client','alb','nextjs','fastapi','supabase'],         method:'GET',  path:'/api/seats',        status:200, ms:38  },
+      // Next.js → FastAPI (health check)
+      { hops:['client','alb','nextjs','fastapi'],                    method:'GET',  path:'/health',          status:200, ms:8   },
+      // Next.js → FastAPI → Redis (cache write)
+      { hops:['client','alb','nextjs','fastapi','redis'],            method:'PUT',  path:'/cache/set',        status:200, ms:12  },
+      // Spring Boot → PostgreSQL (user query)
+      { hops:['client','alb','spring','postgres'],                   method:'GET',  path:'/orders/history',   status:200, ms:78  },
+    ];
+
+    // Spawn a full request chain from a path definition.
+    // Each hop fires after the previous one arrives.
+    function spawnChain(pathDef) {
+      const reachable = computeReachable();
+      const hops = pathDef.hops;
+
+      // If client itself is unreachable, abort
+      if (!reachable.has('client')) return;
+
+      // Find first broken hop (node that is down/unreachable)
+      let breakAt = -1;
+      for (let i = 1; i < hops.length; i++) {   // start at 1 -- client already verified
+        if (!reachable.has(hops[i])) { breakAt = i; break; }
+      }
+
+      const isHealthy = breakAt === -1;
+      const isSlow    = isHealthy && Math.random() > 0.75;
+      // Hops travel forward up to and INCLUDING the broken node (request arrives, gets rejected)
+      const effectiveHops = isHealthy ? hops : hops.slice(0, breakAt + 1);
+
+      let delay = 0;
+      for (let i = 0; i < effectiveHops.length - 1; i++) {
+        const fromId    = effectiveHops[i];
+        const toId      = effectiveHops[i + 1];
+        const from      = nodes[fromId];
+        const to        = nodes[toId];
+        if (!from || !to) break;
+
+        const isLastHop = i === effectiveHops.length - 2;
+        const isBroken  = !isHealthy && isLastHop;
+
+        // Forward packet is ALWAYS a normal request -- green/amber, never 503
+        const hopType  = isSlow ? 'slow' : 'ok';
+        const hopColor = SC[hopType];
+        const hopLabel = i === 0
+          ? `${pathDef.method} ${pathDef.path}`
+          : `→ ${pathDef.path}`;
+
+        ;(function(fId, tId, fx, fy, tx, ty, label, ms, ht, hc, broken, hopDelay, respDelay) {
+          setTimeout(() => {
+            const pkt = {
+              fromId: fId, toId: tId,
+              fx, fy, tx, ty,
+              progress: 0,
+              speed: (0.003 + Math.random() * 0.003) * pgSpeed,
+              label, status: broken ? 503 : pathDef.status, ms,
+              type: ht, color: hc,
+              done: false,
+              // Healthy hops get bidi response; broken destination spawns explicit 503 back
+              bidi: !broken,
+              isResponse: false,
+              affected: false,
+              isBroken: broken,
+              // Store reverse coords for manual 503 response
+              rfx: tx, rfy: ty, rtx: fx, rty: fy,
+              respDelay,
+            };
+            packets.push(pkt);
+          }, hopDelay);
+        })(fromId, toId, from.x, from.y, to.x, to.y,
+           hopLabel, pathDef.ms, hopType, hopColor,
+           isBroken, delay, delay + 400 / pgSpeed);
+
+        delay += 300 / pgSpeed;
+      }
+    }
+
+    function spawnPacket() {
+      // Client must be reachable to originate anything
+      if (!computeReachable().has('client')) return;
+      const path = REQUEST_PATHS[Math.floor(Math.random() * REQUEST_PATHS.length)];
+      spawnChain(path);
+    }
+
+    function spawnResponse(req) {
+      // Broken hop: spawn a red 503 traveling back toward client
+      if (req.isBroken) {
+        setTimeout(() => {
+          packets.push({
+            fromId: req.toId, toId: req.fromId,
+            fx: req.rfx, fy: req.rfy,
+            tx: req.rtx, ty: req.rty,
+            progress: 0,
+            speed: (0.004 + Math.random() * 0.003) * pgSpeed,
+            label: '503 Service Unavailable',
+            status: 503, ms: 0,
+            type: 'err', color: SC.err,
+            done: false, bidi: false, isResponse: true, affected: true,
+          });
+        }, 150 + Math.random() * 200);
+        return;
+      }
+      // Healthy hop: spawn normal response
+      if (!req.bidi) return;
+      setTimeout(() => {
+        const col = req.type === 'slow' ? SC.slow : SC.ok;
+        packets.push({
+          fromId: req.toId, toId: req.fromId,
+          fx: req.tx, fy: req.ty,
+          tx: req.fx, ty: req.fy,
+          progress: 0,
+          speed: (0.004 + Math.random() * 0.003) * pgSpeed,
+          label: `${req.status}${req.ms ? ' ' + req.ms + 'ms' : ''}`,
+          status: req.status, ms: req.ms,
+          type: req.type, color: col,
+          done: false, bidi: false, isResponse: true, affected: false,
+        });
+      }, 150 + Math.random() * 250);
+    }
+
+    // ── Draw ──────────────────────────────────────────────────────────
+    function lerp(a,b,t){ return a+(b-a)*t; }
+    function ease(t){ return t<.5?2*t*t:-1+(4-2*t)*t; }
+
+    function drawPg() {
+      pgCtx.clearRect(0, 0, PW, PH);
+
+      // Edges
+      const reachableNow = computeReachable();
+      EDGES.forEach(edge => {
+        const f = nodes[edge.from], t = nodes[edge.to];
+        if (!f || !t) return;
+        const fromReach = reachableNow.has(edge.from);
+        const toReach   = reachableNow.has(edge.to);
+        const fullyDead = !fromReach && !toReach;
+        const partDead  = !fromReach || !toReach;
+        pgCtx.beginPath();
+        pgCtx.moveTo(f.x, f.y);
+        pgCtx.lineTo(t.x, t.y);
+        const isLightMode = document.documentElement.classList.contains('light');
+        pgCtx.strokeStyle = fullyDead
+          ? 'rgba(229,57,53,0.65)'
+          : partDead
+            ? 'rgba(180,120,30,0.5)'
+            : isLightMode ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.22)';
+        pgCtx.lineWidth = fullyDead ? 2.5 : partDead ? 1.5 : 1.5;
+        pgCtx.stroke();
+      });
+
+      // Nodes
+      NODE_DEFS.forEach(def => {
+        const n = nodes[def.id];
+        if (!n) return;
+        const isDown     = downSet.has(def.id);
+        const isUnreach  = !reachableNow.has(def.id) && !isDown; // upstream cut
+
+        // Error pulse ring
+        if (n.errPulse > 0) {
+          pgCtx.beginPath();
+          pgCtx.arc(n.x, n.y, 12 + (1 - n.errPulse) * 22, 0, Math.PI * 2);
+          pgCtx.strokeStyle = `rgba(229,57,53,${n.errPulse * 0.6})`;
+          pgCtx.lineWidth = 1.5;
+          pgCtx.stroke();
+          n.errPulse = Math.max(0, n.errPulse - 0.018);
+        }
+
+        // Pulse glow (healthy)
+        if (n.pulse > 0 && !isDown) {
+          pgCtx.beginPath();
+          pgCtx.arc(n.x, n.y, 10 + n.pulse * 18, 0, Math.PI * 2);
+          pgCtx.fillStyle = `rgba(212,168,71,${n.pulse * 0.08})`;
+          pgCtx.fill();
+          n.pulse = Math.max(0, n.pulse - 0.025);
+        }
+
+        // Node fill
+        const nodeColor = isDown ? '#1a1a1a' : isUnreach ? '#2a2010' : n.color;
+        pgCtx.beginPath();
+        pgCtx.arc(n.x, n.y, isDown ? 7 : 8, 0, Math.PI * 2);
+        pgCtx.fillStyle = nodeColor;
+        pgCtx.globalAlpha = isDown ? 0.5 : 0.85;
+        pgCtx.fill();
+        pgCtx.globalAlpha = 1;
+
+        // Node ring
+        pgCtx.beginPath();
+        pgCtx.arc(n.x, n.y, isDown ? 7 : 8, 0, Math.PI * 2);
+        pgCtx.strokeStyle = isDown
+          ? 'rgba(229,57,53,0.6)'
+          : isUnreach
+            ? 'rgba(212,168,71,0.4)'
+            : 'rgba(255,255,255,0.18)';
+        pgCtx.lineWidth = isDown ? 1.5 : 1;
+        pgCtx.stroke();
+
+        // X icon on downed nodes
+        if (isDown) {
+          pgCtx.strokeStyle = 'rgba(229,57,53,0.9)';
+          pgCtx.lineWidth = 1.5;
+          pgCtx.beginPath(); pgCtx.moveTo(n.x-4, n.y-4); pgCtx.lineTo(n.x+4, n.y+4); pgCtx.stroke();
+          pgCtx.beginPath(); pgCtx.moveTo(n.x+4, n.y-4); pgCtx.lineTo(n.x-4, n.y+4); pgCtx.stroke();
+        }
+
+        // Labels
+        pgCtx.textAlign = 'center';
+        pgCtx.font = `bold 9px "IBM Plex Mono", monospace`;
+        pgCtx.fillStyle = isDown
+          ? 'rgba(229,57,53,0.7)'
+          : isUnreach
+            ? 'rgba(212,168,71,0.6)'
+            : 'rgba(237,232,224,0.8)';
+        pgCtx.fillText(def.label, n.x, n.y + 21);
+        pgCtx.font = '7.5px "IBM Plex Mono", monospace';
+        pgCtx.fillStyle = isDown
+          ? 'rgba(229,57,53,0.45)'
+          : isUnreach
+            ? 'rgba(212,168,71,0.35)'
+            : 'rgba(212,168,71,0.5)';
+        pgCtx.fillText(def.sublabel, n.x, n.y + 31);
+      });
+
+      // Packets
+      packets.forEach(pkt => {
+        if (pkt.done) return;
+        pkt.progress = Math.min(1, pkt.progress + pkt.speed);
+        const t  = ease(pkt.progress);
+        const cx = lerp(pkt.fx, pkt.tx, t);
+        const cy = lerp(pkt.fy, pkt.ty, t);
+        const dx = pkt.tx - pkt.fx, dy = pkt.ty - pkt.fy;
+        const len = Math.sqrt(dx*dx + dy*dy) || 1;
+        const arc = Math.sin(pkt.progress * Math.PI) * (len * 0.07);
+        const ax  = cx + (-dy / len) * arc;
+        const ay  = cy + ( dx / len) * arc;
+
+        // Trail
+        pgCtx.beginPath();
+        pgCtx.arc(ax, ay, 2, 0, Math.PI * 2);
+        pgCtx.fillStyle = pkt.color;
+        pgCtx.globalAlpha = 0.2;
+        pgCtx.fill();
+        pgCtx.globalAlpha = 1;
+
+        // Dot
+        pgCtx.beginPath();
+        pgCtx.arc(ax, ay, pkt.isResponse ? 2.5 : 3.5, 0, Math.PI * 2);
+        pgCtx.fillStyle = pkt.color;
+        pgCtx.globalAlpha = 0.9;
+        pgCtx.fill();
+        pgCtx.globalAlpha = 1;
+
+        // Label mid-flight
+        if (pkt.progress > 0.18 && pkt.progress < 0.82) {
+          pgCtx.font = (pkt.isResponse ? 'italic ' : '') + '7.5px "IBM Plex Mono", monospace';
+          pgCtx.fillStyle  = pkt.color;
+          pgCtx.globalAlpha = 0.8;
+          pgCtx.textAlign  = 'center';
+          pgCtx.fillText(pkt.label, ax, ay - 9);
+          pgCtx.globalAlpha = 1;
+        }
+
+        if (pkt.progress >= 1) {
+          pkt.done = true;
+          const dest = nodes[pkt.toId];
+          if (dest) {
+            if (pkt.type === 'err') dest.errPulse = 1;
+            else dest.pulse = 1;
+          }
+          // Log to terminal -- errors and genuine slow requests only
+          if (pkt.type === 'err' && !pkt.isResponse) {
+            termLog(`${pkt.label} -- ${nodes[pkt.fromId]?.label} -> ${nodes[pkt.toId]?.label}`, 't-err');
+          } else if (pkt.isResponse && pkt.status === 503) {
+            termLog(`503 Service Unavailable <- ${nodes[pkt.fromId]?.label}`, 't-err');
+          } else if (!pkt.isResponse && pkt.ms >= 400) {
+            termLog(`${pkt.label} -- ${pkt.ms}ms (slow)`, 't-warn');
+          }
+          spawnResponse(pkt);
+        }
+      });
+      packets = packets.filter(p => !p.done);
+
+      if (pgVisible) requestAnimationFrame(drawPg);
+    }
+
+    // Pause animation loop when playground scrolled out of view
+    let pgVisible = true;
+    const pgViewObserver = new IntersectionObserver(entries => {
+      const wasVisible = pgVisible;
+      pgVisible = entries[0].isIntersecting;
+      if (pgVisible && !wasVisible) {
+        packets = [];  // clear stale in-flight on re-enter to avoid burst
+        requestAnimationFrame(drawPg);
+      }
+    }, { threshold: 0.05 });
+    pgViewObserver.observe(document.getElementById('playground'));
+
+    let pgSchedulerActive = true;
+    let pgSpeed = 1.0;  // playback speed multiplier
+
+    function setSpeed(s) {
+      pgSpeed = s;
+      document.querySelectorAll('.btn-speed').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById(`speed-${s}`);
+      if (btn) btn.classList.add('active');
+    }
+
+    function schedulePg() {
+      if (pgSchedulerActive) {
+        spawnPacket();
+      }
+      setTimeout(schedulePg, (2000 + Math.random() * 2000) / pgSpeed);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        pgSchedulerActive = false;
+        packets = [];  // clear in-flight packets so no burst on return
+      } else {
+        pgSchedulerActive = true;
+      }
+    });
+
+    pgResize();
+    drawPg();
+    setTimeout(schedulePg, 500);
     const obs = new IntersectionObserver(entries => {
       entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }});
     }, {threshold:.1});
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // ── Theme toggle ─────────────────────────────────────────────────
+    function toggleTheme() {
+      const html    = document.documentElement;
+      const icon    = document.getElementById('toggle-icon');
+      const label   = document.getElementById('toggle-label');
+      const isLight = html.classList.toggle('light');
+      icon.textContent  = isLight ? '&#9790;' : '&#9788;';
+      icon.innerHTML    = isLight ? '&#9790;' : '&#9788;';
+      label.textContent = isLight ? 'Dark' : 'Light';
+      // Persist preference
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+    // Restore saved preference on load
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light') {
+        document.documentElement.classList.add('light');
+        const icon  = document.getElementById('toggle-icon');
+        const label = document.getElementById('toggle-label');
+        if (icon)  icon.innerHTML    = '&#9790;';
+        if (label) label.textContent = 'Dark';
+      }
+    })();
+
+    // ── Accordion ────────────────────────────────────────────────────
+    function toggleAcc(header) {
+      const body    = header.nextElementSibling;
+      const isOpen  = header.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.acc-header').forEach(h => {
+        h.classList.remove('open');
+        h.nextElementSibling.classList.remove('open');
+      });
+      // Open clicked if it was closed
+      if (!isOpen) {
+        header.classList.add('open');
+        body.classList.add('open');
+      }
+    }
+    // Open first accordion item on load
+    const firstAcc = document.querySelector('.acc-header');
+    if (firstAcc) {
+      firstAcc.classList.add('open');
+      firstAcc.nextElementSibling.classList.add('open');
+    }
+    // REPLACE THIS URL with your Cloudflare Worker URL after deployment
+    const WORKER_URL = 'https://YOUR_WORKER_NAME.YOUR_SUBDOMAIN.workers.dev';
+
+    // Generate a privacy-safe browser fingerprint (no PII stored)
+    async function getFingerprint() {
+      const raw = [
+        navigator.userAgent,
+        navigator.language,
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        screen.width, screen.height, screen.colorDepth
+      ].join('|');
+      // Hash it so nothing identifiable is sent
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,32);
+    }
+
+    // Track visit and get stats
+    async function trackVisit() {
+      try {
+        const fp = await getFingerprint();
+        const res = await fetch(WORKER_URL + '/visit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fingerprint: fp })
+        });
+        return await res.json();
+      } catch(e) {
+        return null;
+      }
+    }
+
+    // Render the admin badge content
+    function renderBadge(data) {
+      const el = document.getElementById('badge-content');
+      if (!data) {
+        el.innerHTML = '<div class="badge-loading">Unavailable</div>';
+        return;
+      }
+      el.innerHTML = `
+        <div class="badge-row">
+          <span class="badge-label">Total visitors</span>
+          <span class="badge-value">${data.total_unique.toLocaleString()}</span>
+        </div>
+        <div class="badge-row">
+          <span class="badge-label">This week</span>
+          <span class="badge-value">${data.week_unique.toLocaleString()}</span>
+        </div>`;
+    }
+
+    // Show or hide badge based on hash
+    const badge = document.getElementById('admin-badge');
+    let statsLoaded = false;
+
+    async function checkAdmin() {
+      if (window.location.hash === '#admin') {
+        badge.classList.add('visible');
+        if (!statsLoaded) {
+          const data = await trackVisit();
+          renderBadge(data);
+          statsLoaded = true;
+        }
+      } else {
+        badge.classList.remove('visible');
+      }
+    }
+
+    // Track visit silently on every page load (non-admin too)
+    // Stats only fetched + shown when #admin is active
+    (async () => {
+      // Always track the visit in the background
+      if (window.location.hash !== '#admin') {
+        const fp = await getFingerprint();
+        fetch(WORKER_URL + '/visit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fingerprint: fp })
+        }).catch(() => {});
+      }
+      checkAdmin();
+    })();
+
+    window.addEventListener('hashchange', checkAdmin);
   </script>
 </body>
 </html>
