@@ -226,6 +226,9 @@ a { color: var(--accent); }
 .sitebar button { font: 500 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--hair); padding: 8px 11px; cursor: pointer; }
 .sitebar button:hover, .sitebar button:focus-visible { color: var(--ink); border-color: var(--accent); }
 .page { padding-block: 36px 72px; }
+.readnext { border-top: 1px solid var(--hair); padding-top: 18px; display: grid; gap: 6px; }
+.readnext a { font: 400 22px/1.3 var(--display); color: var(--ink); text-decoration: none; }
+.readnext a:hover, .readnext a:focus-visible { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -322,6 +325,10 @@ a { color: var(--accent); }
     <p class="foot">The LLM prompt (gemma4:e4b through Ollama, thinking on) ran on a random 60 of the 500 postings. Times are on a 24 GB M3 MacBook.</p>
     <p class="byline">Built for jobhunter, a job matcher that runs on your own computer with free, open models.</p>
   </section>
+  <aside class="readnext" aria-label="Read next">
+    <span class="eyebrow">Also from this project</span>
+    <a href="../decision-models-vs-local-llm/">Can a 400M decision model replace a local LLM for job alerts?</a>
+  </aside>
 </main>
 
 <script>
