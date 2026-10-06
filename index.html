@@ -440,6 +440,7 @@
     .d2 { transition-delay: .2s; }
     .d3 { transition-delay: .3s; }
     .d4 { transition-delay: .4s; }
+    .d5 { transition-delay: .5s; }
 
     /* ── What I Bring -- Accordion ── */
     #value { background: var(--bg); }
@@ -877,10 +878,34 @@
 
     <div class="projects-list">
 
-      <!-- nuk.ai -->
+      <!-- jobhunter -->
       <div class="project-card reveal d1">
         <div>
-          <div class="project-num">01 / 04</div>
+          <div class="project-num">01 / 05</div>
+          <h3 class="project-title">jobhunter</h3>
+          <div class="project-tagline">A local, free job-alert pipeline that scores postings against my resume.</div>
+          <p class="project-problem">Job boards send far more postings than anyone can read. I built a pipeline that collects postings from 12 boards, filters them with rules, and has small local models decide which few deserve an alert.</p>
+          <ul>
+            <li class="vbullet"><span>Fine-tuned a 400M-parameter model (Laya) on three narrow questions, lifting alerts worth opening from <strong>24% to 42.9%</strong> on a 500-posting benchmark</span></li>
+            <li class="vbullet"><span>Rules and a yes/no role check remove about 87% of postings before any model runs; about 1 posting in 100 becomes an alert</span></li>
+            <li class="vbullet"><span>Every decision carries a reason, and alert emails have feedback buttons that record real-world verdicts</span></li>
+          </ul>
+          <div class="project-stack">
+            <span class="stack-tag">Python</span><span class="stack-tag">PyTorch</span>
+            <span class="stack-tag">Laya</span><span class="stack-tag">Ollama</span>
+            <span class="stack-tag">SQLite</span>
+          </div>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/jovin-nicholas/jobhunter" target="_blank" class="project-link">GitHub &#8599;</a>
+          <a href="job-alerts/" target="_blank" class="project-link">Learn more &#8599;</a>
+        </div>
+      </div>
+
+      <!-- nuk.ai -->
+      <div class="project-card reveal d2">
+        <div>
+          <div class="project-num">02 / 05</div>
           <h3 class="project-title">nuk.ai</h3>
           <div class="project-tagline">Won Best Innovation at Hack NUACM 2025. Built and shipped in 24 hours.</div>
           <p class="project-problem">Students spent time manually searching for a seat in the overcrowded library. I built a real-time occupancy platform that predicts crowding and lets students query availability in plain English.</p>
@@ -901,9 +926,9 @@
       </div>
 
       <!-- CatchMe -->
-      <div class="project-card reveal d2">
+      <div class="project-card reveal d3">
         <div>
-          <div class="project-num">02 / 04</div>
+          <div class="project-num">03 / 05</div>
           <h3 class="project-title">CatchMe</h3>
           <div class="project-tagline">Production-grade AWS infrastructure for a real-time multiplayer game.</div>
           <p class="project-problem">Real-time multiplayer requires consistent low-latency state across every connected client. I built the full backend and infrastructure to handle live player sync, high availability, and zero-downtime deployments.</p>
@@ -924,9 +949,9 @@
       </div>
 
       <!-- JSON Schema Registry -->
-      <div class="project-card reveal d3">
+      <div class="project-card reveal d4">
         <div>
-          <div class="project-num">03 / 04</div>
+          <div class="project-num">04 / 05</div>
           <h3 class="project-title">JSON Schema Registry</h3>
           <div class="project-tagline">Event-driven backend built to stay fast under write-heavy load.</div>
           <p class="project-problem">Schema registries need fast reads for search and reliable writes for storage - but coupling them means write spikes hurt search performance. I decoupled them with async queuing so each concern scales independently.</p>
@@ -947,9 +972,9 @@
       </div>
 
       <!-- SafeDine -->
-      <div class="project-card reveal d4">
+      <div class="project-card reveal d5">
         <div>
-          <div class="project-num">04 / 04</div>
+          <div class="project-num">05 / 05</div>
           <h3 class="project-title">SafeDine</h3>
           <div class="project-tagline">Turned messy city open data into a usable, accurate restaurant safety tool.</div>
           <p class="project-problem">Boston's public health violation data is fragmented and full of duplicates - restaurants appear under multiple names and addresses. I built a pipeline to clean, deduplicate, and enrich it into something people could actually use.</p>
