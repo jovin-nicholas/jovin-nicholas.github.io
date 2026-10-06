@@ -183,9 +183,6 @@ tr.pend td { color: var(--muted); }
 .sitebar button { font: 500 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--hair); padding: 8px 11px; cursor: pointer; }
 .sitebar button:hover, .sitebar button:focus-visible { color: var(--ink); border-color: var(--accent); }
 .page { padding-block: 36px 72px; }
-.readnext { border-top: 1px solid var(--hair); padding-top: 18px; display: grid; gap: 6px; }
-.readnext a { font: 400 22px/1.3 var(--display); color: var(--ink); text-decoration: none; }
-.readnext a:hover, .readnext a:focus-visible { color: var(--accent); }
 </style>
 
 </head>
@@ -246,6 +243,7 @@ tr.pend td { color: var(--muted); }
     <span class="eyebrow">The test</span>
     <h2 id="test">500 unseen postings, judged two ways</h2>
     <p class="lede">I picked 500 postings at random from four days of my search. A larger LLM read each with my full resume and marked 35 as good jobs. No model had seen any of them. Every setup is scored on two questions: <b>alerts worth opening</b> (of the alerts it sent, how many were good jobs) and <b>good jobs caught</b> (of the 35). Both are measured against the labelling LLM, not my own judgement.</p>
+    <p class="lede">You can't max out both. Alert on every posting and you catch all 35 good jobs, but only 7% of the alerts are worth opening. Alert on almost nothing and most alerts are good, but most good jobs are missed. So every table below shows both scores, plus how many alerts were sent.</p>
     <p class="lede">To know how high "good" can go, I had the labelling LLM rate 120 of the postings again, including all 35 good jobs. It agreed with itself on about 95% of them, but the borderline postings that decide precision are where it wavered, so even a second pass of the labeller reaches only about 70% of alerts worth opening. That is the realistic ceiling.</p>
   </section>
 
@@ -277,7 +275,7 @@ tr.pend td { color: var(--muted); }
       <div><b>156</b><span>after Nimble's "software role?"</span><span class="g">34 good jobs</span></div>
       <div><b>~35&ndash;43</b><span>alerts from the final model</span><span class="g">15&ndash;18 good jobs</span></div>
     </div>
-    <p class="lede">The rules removed almost two thirds of the postings and only 1 good job. Nimble's single yes/no question removed 29 more postings, none of them good jobs. Clef-Flash in Nimble's place did the same (41% of alerts worth opening against 42%), so I kept the smaller download. The final model then only has to judge 156 plausible postings:</p>
+    <p class="lede">The rules removed almost two thirds of the postings and only 1 good job. On their own they already help a lot: one-question Laya behind the rules alone, alerting at any confidence, sends 97 alerts and 26.8% are worth opening (26 good jobs caught), against 10.1% with no rules in front. Nimble's single yes/no question removed 29 more postings, none of them good jobs. Clef-Flash in Nimble's place did the same (41% of alerts worth opening against 42%), so I kept the smaller download. The final model then only has to judge 156 plausible postings:</p>
     <p class="lede">Each final model decides an alert in its own terms. Gemma writes a whole-number match score from 1 (no match) to 10 (exceptional); my pipeline has always alerted at 8 or more, and the table also shows 9 or more. Three-question Laya gives a fit score with decimals on the same 1&ndash;10 scale, the average of the probabilities it gives each score, and alerts at 6.07, a line fitted on held-out training postings before this test.</p>
     <div class="tablewrap">
       <table>
@@ -346,10 +344,6 @@ tr.pend td { color: var(--muted); }
   <footer class="foot">
     <span>Everything runs locally and free; Laya's fine-tuning used about 20 minutes of a cloud GPU. Numbers are counts over the 500-posting benchmark; no individual postings or resume details are shown.</span>
   </footer>
-  <aside class="readnext" aria-label="Read next">
-    <span class="eyebrow">Also from this project</span>
-    <a href="../six-times-better-than-random/">Which model picks the right job postings?</a>
-  </aside>
 </main>
 <script>
 (function () {
