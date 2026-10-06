@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Job Alert Showdown</title>
+<meta name="description" content="Free, local models tested on 500 unseen job postings: rules plus two small models made about two in five alerts good jobs, six times better than random.">
+<meta property="og:title" content="Which model picks the right job postings?">
+<meta property="og:description" content="Free, local models tested on 500 unseen job postings: rules plus two small models made about two in five alerts good jobs, six times better than random.">
+<meta property="og:type" content="article">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f7f8f6;
+  --panel: #eef1f0;
+  --ink: #15191e;
+  --ink-2: #4f5761;
+  --muted: #7f8790;
+  --hair: #dfe3e5;
+  --axis: #c6ccd1;
+  --accent: #2a78d6;
+  --accent-soft: rgba(42, 120, 214, 0.10);
+  --series-2: #eb6834;
+  --neutral-bar: #aeb6be;
+  --chip-notify: #1f6f43;
+  --chip-log: #8a5a00;
+  --chip-skip: #7f8790;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #14181d; --panel: #1b2027; --ink: #f2f4f5; --ink-2: #b7bec6; --muted: #8b939c;
+    --hair: #2a3037; --axis: #3a414a; --accent: #3987e5; --accent-soft: rgba(57, 135, 229, 0.14);
+    --series-2: #d95926; --neutral-bar: #59626d; --chip-notify: #5cc28a; --chip-log: #e0a83a; --chip-skip: #8b939c;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #14181d; --panel: #1b2027; --ink: #f2f4f5; --ink-2: #b7bec6; --muted: #8b939c;
+  --hair: #2a3037; --axis: #3a414a; --accent: #3987e5; --accent-soft: rgba(57, 135, 229, 0.14);
+  --series-2: #d95926; --neutral-bar: #59626d; --chip-notify: #5cc28a; --chip-log: #e0a83a; --chip-skip: #8b939c;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body); }
+.page { max-width: 820px; margin: 0 auto; padding-inline: 20px; padding-block: 48px 72px; display: grid; gap: 64px; }
+.page, .section, .hero, details { grid-template-columns: minmax(0, 1fr); }
+.page > *, .section > *, .hero > *, details > * { min-width: 0; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(34px, 6vw, 54px); line-height: 1.04; font-weight: 800; font-stretch: 112%; letter-spacing: -0.01em; }
+h2 { font-size: clamp(24px, 3.4vw, 30px); line-height: 1.15; font-weight: 750; font-stretch: 108%; }
+h3 { font-size: 18px; line-height: 1.25; font-weight: 700; font-stretch: 104%; }
+p { margin: 0; max-width: 66ch; }
+.eyebrow { font: 500 12px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.dek { font-size: 19px; line-height: 1.55; color: var(--ink-2); }
+.section { display: grid; gap: 18px; }
+.lede { color: var(--ink-2); }
+.mono { font-family: var(--mono); font-size: 0.92em; }
+
+/* hero */
+.hero { display: grid; gap: 22px; }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 8px; }
+.tile { background: var(--panel); border-radius: 10px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+.tile .label { font-size: 13px; color: var(--ink-2); }
+.tile .pair { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.tile .pair b { font: 650 20px/1.2 var(--display); font-stretch: 106%; color: var(--ink-2); }
+.tile .pair.hi { color: var(--ink); font-weight: 600; }
+.tile .pair.hi b { font-size: 30px; color: var(--accent); }
+.tile .note { font-size: 12.5px; color: var(--muted); }
+@media (max-width: 640px) { .tiles { grid-template-columns: 1fr; } }
+
+/* decision chips: the three answers every approach gives */
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font: 500 12.5px/1 var(--mono); padding: 6px 9px; border-radius: 999px; border: 1px solid var(--hair); display: inline-flex; gap: 6px; align-items: center; }
+.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.chip.notify { color: var(--chip-notify); } .chip.log { color: var(--chip-log); } .chip.skip { color: var(--chip-skip); }
+.chip b { color: var(--ink); font-weight: 500; }
+
+/* charts */
+.chart { background: var(--panel); border-radius: 12px; padding: 18px 18px 10px; display: grid; gap: 10px; }
+.chart-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.chart-title { font: 600 15px/1.35 var(--body); }
+.chart-sub { font-size: 13px; color: var(--ink-2); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.key { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.svgwrap { position: relative; width: 100%; }
+.svgwrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+.svgwrap text { font-family: var(--body); }
+.t-label { fill: var(--ink); font-size: 13px; }
+.t-label.strong { font-weight: 600; }
+.t-muted { fill: var(--muted); font-size: 11.5px; font-family: var(--mono); }
+.t-value { fill: var(--ink-2); font-size: 12px; font-family: var(--mono); }
+.t-value.strong { fill: var(--ink); font-weight: 500; }
+.grid-line { stroke: var(--hair); stroke-width: 1; }
+.base-line { stroke: var(--axis); stroke-width: 1; }
+.ref-line { stroke: var(--muted); stroke-width: 1; }
+.connector { stroke: var(--axis); stroke-width: 2; stroke-linecap: round; }
+.dot-a { fill: var(--accent); stroke: var(--panel); stroke-width: 2; }
+.dot-b { fill: var(--series-2); stroke: var(--panel); stroke-width: 2; }
+.bar { fill: var(--neutral-bar); }
+.bar.hi { fill: var(--accent); }
+.band { fill: var(--accent-soft); }
+.hit { fill: transparent; cursor: default; }
+.hit:focus { outline: none; }
+.hit:focus-visible { stroke: var(--accent); stroke-width: 2; }
+.tooltip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font: 500 12.5px/1.45 var(--body); padding: 8px 10px; border-radius: 8px; max-width: 260px; transform: translate(-50%, calc(-100% - 10px)); white-space: normal; z-index: 2; }
+.tooltip b { font-weight: 600; }
+.foot { font-size: 12.5px; color: var(--muted); padding-bottom: 6px; }
+.pill { font: 500 10.5px/1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 6px; border-radius: 4px; background: var(--hair); color: var(--ink-2); vertical-align: 2px; }
+
+/* approaches */
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.card { border: 1px solid var(--hair); border-radius: 10px; padding: 16px 18px; display: grid; gap: 10px; align-content: start; }
+.card.final { border-color: var(--accent); background: var(--accent-soft); }
+.card .kind { font: 500 11.5px/1.3 var(--mono); color: var(--muted); letter-spacing: 0.03em; }
+.card dl { margin: 0; display: grid; gap: 8px; }
+.card dt { font: 600 12px/1.3 var(--body); color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.card dd { margin: 0; font-size: 14.5px; line-height: 1.5; }
+@media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+.dropped { border-top: 1px solid var(--hair); padding-top: 14px; display: grid; gap: 8px; font-size: 14.5px; }
+.dropped p { max-width: none; }
+.dropped b { font-weight: 600; }
+
+/* pipeline */
+.flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
+.stage { background: var(--panel); border-radius: 10px; padding: 14px 12px; display: grid; gap: 6px; align-content: start; position: relative; }
+.stage.out { background: var(--accent-soft); outline: 1px solid var(--accent); }
+.stage .n { font: 750 28px/1 var(--display); font-stretch: 108%; }
+.stage .what { font: 600 13.5px/1.3 var(--body); }
+.stage .how { font-size: 12.5px; color: var(--ink-2); line-height: 1.45; }
+.stage .good { font: 500 11.5px/1.3 var(--mono); color: var(--chip-notify); }
+.stage:not(:last-child)::after { content: "→"; position: absolute; right: -10px; top: 18px; color: var(--muted); font-size: 14px; }
+@media (max-width: 700px) {
+  .flow { grid-template-columns: 1fr; }
+  .stage:not(:last-child)::after { content: "↓"; right: auto; left: 18px; top: auto; bottom: -15px; }
+}
+
+/* lessons */
+.lessons { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.lessons li { display: grid; gap: 4px; padding-left: 16px; border-left: 2px solid var(--hair); }
+.lessons b { font-weight: 600; }
+.lessons span { color: var(--ink-2); font-size: 15px; }
+
+/* leaderboard */
+.board table { min-width: 600px; font-size: 14px; }
+.board th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+.board td { vertical-align: middle; padding-block: 11px; }
+.board .rank { font: 700 18px/1 var(--display); font-stretch: 108%; color: var(--muted); width: 36px; }
+.board tr.final .rank { color: var(--accent); }
+.board tr.final td { background: var(--accent-soft); }
+.board tr.final td:first-child { border-radius: 8px 0 0 8px; } .board tr.final td:last-child { border-radius: 0 8px 8px 0; }
+.board .who b { font-weight: 600; display: block; } .board .who span { font: 400 12px/1.4 var(--mono); color: var(--muted); }
+.meter { display: flex; align-items: center; gap: 10px; min-width: 150px; }
+.meter i { display: block; height: 8px; border-radius: 0 4px 4px 0; background: var(--neutral-bar); }
+.board tr.final .meter i { background: var(--accent); }
+.board tr.chance td { color: var(--muted); } .board tr.chance .meter i { background: var(--hair); }
+.meter em { font: 500 13px/1 var(--mono); font-style: normal; font-variant-numeric: tabular-nums; min-width: 34px; }
+
+/* table + notes */
+details { border-top: 1px solid var(--hair); padding-top: 12px; }
+summary { cursor: pointer; font-weight: 600; font-size: 14.5px; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.tablewrap { overflow-x: auto; margin-top: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 560px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--hair); vertical-align: top; }
+th { font-weight: 600; color: var(--ink-2); font-size: 12.5px; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 12.5px; }
+tr.final td { font-weight: 600; }
+.notes { display: grid; gap: 10px; font-size: 14px; color: var(--ink-2); }
+.notes p { max-width: 72ch; }
+.byline { font-size: 13px; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) {
+  .bar, .dot-a, .dot-b { transition: opacity 0.15s; }
+}
+
+.ci { stroke: var(--accent); stroke-opacity: 0.35; stroke-width: 6; stroke-linecap: round; }
+.ci.other { stroke: var(--neutral-bar); stroke-opacity: 0.55; }
+.dot-hi { fill: var(--accent); stroke: var(--panel); stroke-width: 2; }
+.dot-other { fill: var(--ink-2); stroke: var(--panel); stroke-width: 2; }
+.board .range { font: 400 11.5px/1 var(--mono); color: var(--muted); display: block; margin-top: 4px; }
+
+.steps { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.steps li { background: var(--panel); border-radius: 10px; padding: 12px 14px; display: grid; gap: 4px; align-content: start; position: relative; }
+.steps li:last-child { background: var(--accent-soft); outline: 1px solid var(--accent); }
+.steps .step-n { font: 500 11px/1 var(--mono); color: var(--muted); }
+.steps b { font: 650 15px/1.3 var(--display); font-stretch: 104%; }
+.steps li > span:last-child { font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+.steps li:not(:last-child)::after { content: "→"; position: absolute; right: -9px; top: 12px; color: var(--muted); font-size: 13px; }
+@media (max-width: 700px) {
+  .steps { grid-template-columns: 1fr; }
+  .steps li:not(:last-child)::after { content: "↓"; right: auto; left: 14px; top: auto; bottom: -15px; }
+}
+.contenders { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 66ch; color: var(--ink-2); }
+.contenders b { color: var(--ink); font-weight: 600; }
+.why { background: var(--panel); border-radius: 10px; padding: 14px 18px; display: grid; gap: 6px; max-width: 72ch; }
+.why b { font: 650 15px/1.3 var(--display); font-stretch: 104%; }
+.why p { font-size: 15px; color: var(--ink-2); }
+.board tr.group td { padding-top: 22px; font: 500 12px/1.4 var(--mono); color: var(--muted); border-bottom: 1px solid var(--hair); }
+.board .meter i { height: 7px; }
+.board th .th-q { display: block; margin-top: 3px; font: 400 11.5px/1.3 var(--sans, inherit); text-transform: none; letter-spacing: 0; color: var(--muted); }
+.board td .range { display: block; }
+.board .meter em { white-space: nowrap; }
+.board tr.small td { color: var(--muted); }
+.board tr.small .who b { font-weight: 500; }
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <h1>Which model picks the right job postings?</h1>
+    <p class="dek">I tested free, local models on 500 job postings they had never seen, to find which one should decide when I get a job alert. The best result came from chaining simple rules and two models. About two in five of its alerts were good jobs, six times better than picking at random.</p>
+    <ol class="steps" aria-label="The hybrid pipeline, step by step">
+      <li><span class="step-n">1</span><b>Rules</b><span>Plain code drops clear mismatches: wrong country, too many years of experience asked for, senior job titles, excluded keywords.</span></li>
+      <li><span class="step-n">2</span><b>One yes/no question</b><span>A decision model (Nimble 9B) answers "Is this a software role?"</span></li>
+      <li><span class="step-n">3</span><b>Fit check</b><span>A small fine-tuned classifier (Laya) decides whether the job fits my resume.</span></li>
+      <li><span class="step-n">4</span><b>Alert</b><span>Only when the classifier is at least 70% sure (confidence 0.7).</span></li>
+    </ol>
+    <div class="tiles" aria-label="Headline results">
+      <div class="tile"><span class="label">Alerts worth opening</span>
+        <span class="pair"><span>Random pick</span><b>7%</b></span>
+        <span class="pair hi"><span>Hybrid pipeline</span><b>42%</b></span>
+        <span class="note">18 of its 43 alerts were good jobs</span></div>
+      <div class="tile"><span class="label">Alerts sent per 100 postings</span>
+        <span class="pair"><span>Classifier alone</span><b>54</b></span>
+        <span class="pair hi"><span>Hybrid pipeline</span><b>9</b></span>
+        <span class="note">For comparison, 7 in 100 postings were good jobs</span></div>
+      <div class="tile"><span class="label">Time per posting</span>
+        <span class="pair"><span>LLM prompt</span><b>97 s</b></span>
+        <span class="pair hi"><span>Hybrid pipeline</span><b>3.2 s</b></span>
+        <span class="note">Typical time, on a 24 GB M3 MacBook</span></div>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="test">
+    <span class="eyebrow">The test</span>
+    <h2 id="test">500 postings, each labelled in advance</h2>
+    <p class="lede">I picked 500 postings at random from four days of my job search. A larger LLM read each one with my full resume and marked 35 as good jobs, meaning postings I'd want an alert for. I didn't check those labels by hand, so the scores show how often each approach agreed with it.</p>
+    <p class="lede">Every check includes my resume, so I kept everything on my own machine. I also wanted it free, which rules out paid hosted models such as Jev.</p>
+  </section>
+
+  <section class="section" aria-labelledby="scoring">
+    <span class="eyebrow">Scoring</span>
+    <h2 id="scoring">Two ways to score an alert system</h2>
+    <p class="lede">Every approach was judged on two separate questions:</p>
+    <ul class="contenders">
+      <li><b>Alerts worth opening</b>: of the alerts it sent, how many were good jobs?</li>
+      <li><b>Good jobs caught</b>: of the 35 good jobs, how many did it alert me to?</li>
+    </ul>
+    <p class="lede">Low on the first means noisy alerts; low on the second means missed jobs. For example, an approach that sends 10 alerts, 4 of them good jobs, has 40% of its alerts worth opening, and it caught 4 of the 35 good jobs.</p>
+    <p class="lede">You can't max out both. Alert on every posting and you catch all 35 good jobs, but only 7% of the alerts are worth opening. Alert on almost nothing and most alerts are good, but most good jobs are missed. So the leaderboard ranks by alerts worth opening, because those are the alerts I read every day, and shows good jobs caught and the number of alerts beside it, so you can see what each approach gives up.</p>
+  </section>
+
+  <section class="section" aria-labelledby="board">
+    <span class="eyebrow">Leaderboard</span>
+    <h2 id="board">Ranked by alerts worth opening</h2>
+    <p class="lede">Each row is one approach: how many of its alerts were worth opening, how many of the 35 good jobs it caught, and how many alerts it sent.</p>
+    <div class="tablewrap board" id="leaderboard"></div>
+    <p class="foot" id="board-foot"></p>
+  </section>
+
+  <section class="section" aria-labelledby="meaning">
+    <span class="eyebrow">Reading the leaderboard</span>
+    <h2 id="meaning">What this data means</h2>
+    <p class="lede"><b>Reading the top row.</b> The hybrid pipeline sent 43 alerts across the 500 postings. 18 of them were good jobs, so 42% were worth opening, and those 18 are about half of the 35 good jobs.</p>
+    <p class="lede"><b>Why not a row that catches more?</b> The next row, rules + classifier, catches 26 instead of 18 but sends more than twice as many alerts, and about three in four of them are noise.</p>
+    <p class="lede"><b>The LLM prompt</b> caught all 6 good jobs in its smaller sample, but only by alerting on almost half of all postings. Four in five of its alerts weren't worth opening.</p>
+  </section>
+
+  <section class="section" aria-labelledby="pipeline">
+    <span class="eyebrow">The pipeline I kept</span>
+    <h2 id="pipeline">How 500 postings became 43 alerts</h2>
+    <div class="flow" aria-label="Postings remaining after each step">
+      <div class="stage"><span class="n">500</span><span class="what">Postings</span><span class="how">From 9 job sources</span><span class="good">35 good jobs</span></div>
+      <div class="stage"><span class="n">185</span><span class="what">Rules</span><span class="how">Location, experience asked for, job title, keywords</span><span class="good">34 good jobs left</span></div>
+      <div class="stage"><span class="n">156</span><span class="what">Decision model</span><span class="how">Is it a software role?</span><span class="good">34 good jobs left</span></div>
+      <div class="stage"><span class="n">89</span><span class="what">Classifier</span><span class="how">Does it fit my resume?</span><span class="good">26 good jobs left</span></div>
+      <div class="stage out"><span class="n">43</span><span class="what">Alerts</span><span class="how">Classifier at least 70% sure</span><span class="good">18 good jobs</span></div>
+    </div>
+    <p class="lede">The green numbers show how many good jobs survive each step. The rules removed almost two thirds of the postings but only 1 of the 35 good jobs, and the yes/no question removed 29 more without losing any.</p>
+    <p class="lede">I also tried Cloudflare's new Clef-Flash in place of Nimble. It did the same (41% of alerts worth opening against 42%), so I kept the smaller download.</p>
+  </section>
+
+  <section class="section" aria-labelledby="lessons">
+    <span class="eyebrow">What I learned</span>
+    <h2 id="lessons">Three takeaways</h2>
+    <ul class="lessons">
+      <li><b>Filter with rules before asking a model.</b><span>Plain checks on location, experience and job title more than doubled the share of the classifier's alerts worth opening, and they cost nothing.</span></li>
+      <li><b>Ask a decision model one specific question.</b><span>"Is this a software role?" lost no good jobs. Asked "Should I get an alert?", only one alert in six was worth opening.</span></li>
+      <li><b>Check a model on your own task before trusting its benchmark.</b><span>GLiNER2.5-Decide, a small open decision model, beats my classifier on its maker's own benchmark, yet it said "alert" to 499 of the 500 postings.</span></li>
+    </ul>
+    <p class="foot">The LLM prompt (gemma4:e4b through Ollama, thinking on) ran on a random 60 of the 500 postings. Times are on a 24 GB M3 MacBook.</p>
+    <p class="byline">Built for jobhunter, a job matcher that runs on your own computer with free, open models.</p>
+  </section>
+</main>
+
+<script>
+const DATA = {"chance": 0.07, "methods": [{"name": "Hybrid pipeline", "sub": "rules, then Nimble, then Laya when 70%+ sure", "n": 500, "alerts": 43, "per100": 8.6, "worth": 0.419, "worthCi": [0.284, 0.567], "found": 18, "fits": 35, "foundCi": [0.356, 0.67], "hi": true}, {"name": "Rules + classifier", "sub": "rules, then Laya at any confidence", "n": 500, "alerts": 97, "per100": 19.4, "worth": 0.268, "worthCi": [0.19, 0.364], "found": 26, "fits": 35, "foundCi": [0.579, 0.858], "hi": false}, {"name": "LLM prompt (Gemma)", "sub": "gemma4:e4b · thinking on · 60 postings", "n": 60, "alerts": 28, "per100": 46.7, "worth": 0.214, "worthCi": [0.102, 0.395], "found": 6, "fits": 6, "foundCi": [0.61, 1.0], "hi": false}, {"name": "Decision model", "sub": "Nimble 9B alone", "n": 500, "alerts": 109, "per100": 21.8, "worth": 0.174, "worthCi": [0.115, 0.256], "found": 19, "fits": 35, "foundCi": [0.382, 0.695], "hi": false}, {"name": "Fine-tuned classifier", "sub": "Laya alone, at any confidence", "n": 500, "alerts": 268, "per100": 53.6, "worth": 0.101, "worthCi": [0.07, 0.143], "found": 27, "fits": 35, "foundCi": [0.61, 0.879], "hi": false}, {"name": "GLiNER2.5-Decide", "sub": "used as downloaded, no extra training", "n": 500, "alerts": 499, "per100": 99.8, "worth": 0.068, "worthCi": [0.049, 0.094], "found": 34, "fits": 35, "foundCi": [0.854, 0.995], "hi": false}], "speed": [{"name": "Rules", "s": 0.001, "label": "under 0.01 s"}, {"name": "Fine-tuned classifier", "s": 1.47}, {"name": "Decision model, yes/no question", "s": 7.48}, {"name": "Decision model, full decision", "s": 12.86}, {"name": "GLiNER2.5-Decide (CPU)", "s": 5.9}, {"name": "LLM prompt, thinking off", "s": 28.8}, {"name": "LLM prompt, default", "s": 96.8}]};
+const pct = v => Math.round(v * 100) + "%";
+function drawLeaderboard() {
+  const bar = (v, scale) => `<i style="width:${Math.round(96 * v / scale)}px"></i>`;
+  const cell = (main, v, scale, sub) => `<span class="meter"><em>${main}</em>${bar(v, scale)}</span><span class="range">${sub}</span>`;
+  const row = (m, rank) => `<tr class="${m.hi ? "final" : ""}">
+      <td class="rank">${rank ?? ""}</td>
+      <td class="who"><b>${m.name}</b><span>${m.sub}</span></td>
+      <td>${cell(pct(m.worth), m.worth, 0.6, `${m.found} of ${m.alerts} alerts`)}</td>
+      <td>${cell(`${m.found} of ${m.fits}`, m.found / m.fits, 1, `${pct(m.found / m.fits)} of the good jobs`)}</td>
+      <td class="num">${m.per100.toFixed(1)}</td></tr>`;
+  // A 60-posting sample holds too few good jobs to compare how many were caught, so that cell shows no bar or share,
+  // and the alerts that were noise come first.
+  const smallRow = m => `<tr class="small">
+      <td class="rank"></td>
+      <td class="who"><b>${m.name}</b><span>${m.sub}</span></td>
+      <td><span class="meter"><em>${pct(m.worth)}</em>${bar(m.worth, 0.6)}</span><span class="range">${m.alerts - m.found} of its ${m.alerts} alerts were noise</span></td>
+      <td><span class="meter"><em>${m.found} of ${m.fits}</em></span><span class="range">only ${m.fits} good jobs in its sample</span></td>
+      <td class="num">${m.per100.toFixed(1)}</td></tr>`;
+  const main = DATA.methods.filter(m => m.n === 500), small = DATA.methods.filter(m => m.n !== 500);
+  const chance = `<tr class="chance"><td class="rank"></td><td class="who"><b>Random pick</b><span>for comparison</span></td>
+      <td>${cell(pct(DATA.chance), DATA.chance, 0.6, "35 of 500 postings")}</td><td></td><td class="num">–</td></tr>`;
+  const group = small.length ? `<tr class="group"><td></td><td colspan="4">Tested on ${small[0].n} of the 500 postings, which held only ${small[0].fits} good jobs: too few to rank with the rows above</td></tr>` +
+    small.map(smallRow).join("") : "";
+  document.getElementById("leaderboard").innerHTML = `<table><thead><tr><th></th><th>Approach</th>
+      <th>Alerts worth opening<br><span class="th-q">of the alerts it sent</span></th>
+      <th>Good jobs caught<br><span class="th-q">of the ${DATA.methods[0].fits} good jobs</span></th>
+      <th class="num">Alerts sent<br><span class="th-q">per 100 postings</span></th></tr></thead>
+      <tbody>${main.map((m, i) => row(m, i + 1)).join("")}${chance}${group}</tbody></table>`;
+  document.getElementById("board-foot").textContent = "Each number has a likely range, which is wide with only 35 good jobs.";
+}
+
+drawLeaderboard();
+</script>
+</body>
+</html>
