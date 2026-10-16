@@ -183,8 +183,6 @@ tr.pend td { color: var(--muted); }
 .sitebar button { font: 500 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--hair); padding: 8px 11px; cursor: pointer; }
 .sitebar button:hover, .sitebar button:focus-visible { color: var(--ink); border-color: var(--accent); }
 .page { padding-block: 36px 72px; }
-.revised { font-size: 14px; color: var(--ink-2); border-left: 2px solid var(--warn); padding-left: 14px; }
-.revised b { color: var(--warn); font-weight: 600; }
 </style>
 
 </head>
@@ -206,7 +204,6 @@ tr.pend td { color: var(--muted); }
       <div class="tile"><span class="label">Ranking quality (average precision)</span><b>0.40</b><span class="sub">vs 0.32 for the local LLM<br>difference &minus;0.05 to +0.25: a tie</span></div>
       <div class="tile"><span class="label">Alerts worth opening</span><b>42.9%</b><span class="sub">35 alerts, 15 of them good<br><a href="#today">33% under today's stricter rules</a></span></div>
     </div>
-    <p class="revised"><b>Revised 16 October 2026.</b> The first version said the small model matches the LLM and runs about 60 times faster. Later checks don't support either as written: 60&times; holds only for the scoring step, and on ranking quality the two tie. This version adds 95% intervals, end-to-end timing, a range for the ceiling, the result under the rules I run today, a wider comparison of decision models, and the limits found along the way.</p>
   </header>
 
   <section class="section" aria-labelledby="why">
