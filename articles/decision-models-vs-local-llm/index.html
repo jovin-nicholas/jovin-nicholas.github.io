@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Decision Models vs a Local LLM</title>
-<meta name="description" content="Decision models (Nimble, Clef-Flash, GLiNER2.5-Decide, newer ones such as tev1, and a fine-tuned 400M Laya) against a local LLM for deciding job alerts, on 500 unseen postings. Revised October 2026.">
+<meta name="description" content="Decision models (Nimble, Clef-Flash, GLiNER2.5-Decide, newer ones such as tev1, and a fine-tuned 400M Laya) against a local LLM for deciding job alerts, on 500 unseen postings.">
 <meta property="og:title" content="Can a 400M decision model replace a local 4B LLM for job alerts?">
-<meta property="og:description" content="Decision models against a local LLM for deciding job alerts, on 500 unseen postings: about as good at ranking, about 8 times faster end to end. Revised October 2026.">
+<meta property="og:description" content="Decision models against a local LLM for deciding job alerts, on 500 unseen postings: about as good at ranking, about 8 times faster end to end.">
 <meta property="og:type" content="article">
 <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light")}catch(e){}</script>
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
@@ -196,7 +196,7 @@ tr.pend td { color: var(--muted); }
 </header>
 <main class="page">
   <header class="hero">
-    <span class="eyebrow">Job alerts &middot; revised October 2026</span>
+    <span class="eyebrow">Job alerts</span>
     <h1>Can a 400M decision model replace a local 4B LLM for job alerts?</h1>
     <p class="dek">Decision models pick an answer from a fixed list and give a probability for each one, instead of writing text. Several new ones came out while I was building my job-alert pipeline, so I tested them against the general LLM the pipeline started with. A 400-million-parameter decision model, asked three narrow questions about each posting (what kind of role it is, whether anything rules me out, and how well it fits my resume), ranks jobs about as well as the LLM, makes the whole pipeline about 8 times faster, and gives a reason for every skip. The intervals are too wide to call it better. Two findings mattered more than the model: cheap rules in front decide most of the result, and once they are in place, a separate decision model for the role check adds nothing.</p>
     <div class="tiles" aria-label="Headline results">
