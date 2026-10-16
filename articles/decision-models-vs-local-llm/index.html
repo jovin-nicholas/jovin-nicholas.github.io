@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Decision Models vs a Local LLM</title>
 <meta name="description" content="Decision models (Nimble, Clef-Flash, GLiNER2.5-Decide, newer ones such as tev1, and a fine-tuned 400M Laya) against a local LLM for deciding job alerts, on 500 unseen postings. Revised October 2026.">
-<meta property="og:title" content="Can a 400M decision model replace a local LLM for job alerts?">
+<meta property="og:title" content="Can a 400M decision model replace a local 4B LLM for job alerts?">
 <meta property="og:description" content="Decision models against a local LLM for deciding job alerts, on 500 unseen postings: about as good at ranking, about 8 times faster end to end. Revised October 2026.">
 <meta property="og:type" content="article">
 <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light")}catch(e){}</script>
@@ -199,7 +199,7 @@ tr.pend td { color: var(--muted); }
 <main class="page">
   <header class="hero">
     <span class="eyebrow">Job alerts &middot; revised October 2026</span>
-    <h1>Can a 400M decision model replace a local LLM for job alerts?</h1>
+    <h1>Can a 400M decision model replace a local 4B LLM for job alerts?</h1>
     <p class="dek">Decision models pick an answer from a fixed list and give a probability for each one, instead of writing text. Several new ones came out while I was building my job-alert pipeline, so I tested them against the general LLM the pipeline started with. A 400-million-parameter decision model, asked three narrow questions about each posting (what kind of role it is, whether anything rules me out, and how well it fits my resume), ranks jobs about as well as the LLM, makes the whole pipeline about 8 times faster, and gives a reason for every skip. The intervals are too wide to call it better. Two findings mattered more than the model: cheap rules in front decide most of the result, and once they are in place, a separate decision model for the role check adds nothing.</p>
     <div class="tiles" aria-label="Headline results">
       <div class="tile new"><span class="label">500 postings, end to end</span><b>36 min</b><span class="sub">vs about 4.7 h with the local LLM<br>about 8&times; faster; ~60&times; at the scoring step</span></div>
@@ -215,7 +215,7 @@ tr.pend td { color: var(--muted); }
     <p class="lede">My job search pulls postings from 12 job boards and has to decide, for each one, whether it deserves an email alert, a save for later, or nothing. I started with a general local LLM writing a 1&ndash;10 match score. It worked, but slowly, and its reasons were free text I couldn't count on.</p>
     <p class="lede">Each check in my pipeline has a fixed question and a fixed set of answers, which is what decision models are made for. Several appeared since I started this project. I set two rules for trying them: everything runs on my own machine, because every check includes my resume, and it costs nothing. That ruled out hosted ones such as Jev.</p>
     <div class="models">
-      <div class="model"><span class="kind">General LLM &middot; local</span><h3>Gemma (gemma4:e4b)</h3><p>Through Ollama, with thinking on, as my old pipeline ran it. Reads my resume and the posting and writes a 1&ndash;10 score with its reasoning. The starting point.</p></div>
+      <div class="model"><span class="kind">General LLM &middot; 4B &middot; local</span><h3>Gemma (gemma4:e4b)</h3><p>Google's E4B size: about 4 billion effective parameters (Ollama counts 8 billion in all). Through Ollama, with thinking on, as my old pipeline ran it. Reads my resume and the posting and writes a 1&ndash;10 score with its reasoning. The starting point.</p></div>
       <div class="model"><span class="kind">Decision model &middot; 9B &middot; local</span><h3>Nimble</h3><p>From Bespoke Labs, through Ollama (5.6 GB at 4 bits). Used for one question: "Is this a software engineering role?"</p></div>
       <div class="model"><span class="kind">Decision model &middot; 9B &middot; local</span><h3>Clef-Flash</h3><p>Cloudflare's decision model, tried in Nimble's place on the same question. Its default download is about twice Nimble's.</p></div>
       <div class="model"><span class="kind">Decision model &middot; 340M &middot; local</span><h3>GLiNER2.5-Decide</h3><p>A small open decision model from Fastino that runs on a CPU, used as downloaded.</p></div>
