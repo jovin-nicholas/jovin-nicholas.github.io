@@ -886,10 +886,10 @@
           <div class="project-tagline">A local, free job-alert pipeline that scores postings against my resume.</div>
           <p class="project-problem">Job boards send far more postings than anyone can read. I built a pipeline that collects postings from 12 boards, filters them with rules, and has small local models decide which few deserve an alert.</p>
           <ul>
-            <li class="vbullet"><span>Fine-tuned a 400M-parameter decision model (Laya) on three narrow questions; on a 500-posting benchmark it matches a local LLM at the same alert volume, with <strong>42.9%</strong> of alerts worth opening against 7% at random</span></li>
+            <li class="vbullet"><span>Fine-tuned a 400M-parameter decision model (Laya) on three narrow questions; on a 500-posting benchmark it ranks jobs about as well as a local LLM, with <strong>42.9%</strong> of alerts worth opening against 7% at random</span></li>
             <li class="vbullet"><span>Laya answers structured questions (multiple choice, yes/no, 1-10 scores) with a probability for every option instead of generating text, so each decision is fast, calibrated and explainable</span></li>
-            <li class="vbullet"><span>Replaced a local Ollama LLM that took <strong>97 s per posting</strong> with Laya at about <strong>1.6 s</strong>, about 60x faster on the same machine</span></li>
-            <li class="vbullet"><span>Rules and a yes/no role check cut 500 postings to 156 before Laya runs, losing 1 of the 35 good jobs; every alert email has feedback buttons</span></li>
+            <li class="vbullet"><span>Replaced a local Ollama LLM that took <strong>97 s per posting</strong> with Laya at about <strong>1.6 s</strong>, making the whole pipeline about <strong>8x faster</strong> on the same machine</span></li>
+            <li class="vbullet"><span>Rules cut 500 postings to 185 before Laya runs, losing 1 of the 35 good jobs, and made a separate role-check model unnecessary; every alert email has feedback buttons</span></li>
           </ul>
           <div class="project-stack">
             <span class="stack-tag">Python</span><span class="stack-tag">PyTorch</span>

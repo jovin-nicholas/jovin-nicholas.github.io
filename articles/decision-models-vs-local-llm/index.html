@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Decision Models vs a Local LLM</title>
-<meta name="description" content="Decision models (Nimble, Clef-Flash, GLiNER2.5-Decide, a fine-tuned 400M Laya) against a local LLM for deciding job alerts, on 500 unseen postings.">
+<meta name="description" content="Decision models (Nimble, Clef-Flash, GLiNER2.5-Decide, newer ones such as tev1, and a fine-tuned 400M Laya) against a local LLM for deciding job alerts, on 500 unseen postings. Revised October 2026.">
 <meta property="og:title" content="Can a 400M decision model replace a local LLM for job alerts?">
-<meta property="og:description" content="Decision models against a local LLM for deciding job alerts, on 500 unseen postings: same quality at the same alert volume, about 60 times faster.">
+<meta property="og:description" content="Decision models against a local LLM for deciding job alerts, on 500 unseen postings: about as good at ranking, about 8 times faster end to end. Revised October 2026.">
 <meta property="og:type" content="article">
 <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light")}catch(e){}</script>
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
@@ -183,6 +183,8 @@ tr.pend td { color: var(--muted); }
 .sitebar button { font: 500 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: none; border: 1px solid var(--hair); padding: 8px 11px; cursor: pointer; }
 .sitebar button:hover, .sitebar button:focus-visible { color: var(--ink); border-color: var(--accent); }
 .page { padding-block: 36px 72px; }
+.revised { font-size: 14px; color: var(--ink-2); border-left: 2px solid var(--warn); padding-left: 14px; }
+.revised b { color: var(--warn); font-weight: 600; }
 </style>
 
 </head>
@@ -196,14 +198,15 @@ tr.pend td { color: var(--muted); }
 </header>
 <main class="page">
   <header class="hero">
-    <span class="eyebrow">Job alerts</span>
+    <span class="eyebrow">Job alerts &middot; revised October 2026</span>
     <h1>Can a 400M decision model replace a local LLM for job alerts?</h1>
-    <p class="dek">Decision models pick an answer from a fixed list and give a probability for each one, instead of writing text. Several new ones came out while I was building my job-alert pipeline, so I tested them against the general LLM the pipeline started with. A 400-million-parameter decision model, asked three narrow questions about each posting (what kind of role it is, whether anything rules me out, and how well it fits my resume), now matches the LLM and runs about 60 times faster, with a reason for every decision.</p>
+    <p class="dek">Decision models pick an answer from a fixed list and give a probability for each one, instead of writing text. Several new ones came out while I was building my job-alert pipeline, so I tested them against the general LLM the pipeline started with. A 400-million-parameter decision model, asked three narrow questions about each posting (what kind of role it is, whether anything rules me out, and how well it fits my resume), ranks jobs about as well as the LLM, makes the whole pipeline about 8 times faster, and gives a reason for every skip. The intervals are too wide to call it better. Two findings mattered more than the model: cheap rules in front decide most of the result, and once they are in place, a separate decision model for the role check adds nothing.</p>
     <div class="tiles" aria-label="Headline results">
-      <div class="tile new"><span class="label">Time per posting</span><b>1.6 s</b><span class="sub">three-question Laya<br>vs 97 s for the local LLM</span></div>
-      <div class="tile"><span class="label">Alerts worth opening</span><b>42.9%</b><span class="sub">behind the rules, on 500 postings<br>random pick: 7%</span></div>
-      <div class="tile"><span class="label">Realistic ceiling</span><b>~70%</b><span class="sub">what the labels themselves allow<br>measured by relabelling a sample</span></div>
+      <div class="tile new"><span class="label">500 postings, end to end</span><b>36 min</b><span class="sub">vs about 4.7 h with the local LLM<br>about 8&times; faster; ~60&times; at the scoring step</span></div>
+      <div class="tile"><span class="label">Ranking quality (average precision)</span><b>0.40</b><span class="sub">vs 0.32 for the local LLM<br>difference &minus;0.05 to +0.25: a tie</span></div>
+      <div class="tile"><span class="label">Alerts worth opening</span><b>42.9%</b><span class="sub">35 alerts, 15 of them good<br><a href="#today">33% under today's stricter rules</a></span></div>
     </div>
+    <p class="revised"><b>Revised 16 October 2026.</b> The first version said the small model matches the LLM and runs about 60 times faster. Later checks don't support either as written: 60&times; holds only for the scoring step, and on ranking quality the two tie. This version adds 95% intervals, end-to-end timing, a range for the ceiling, the result under the rules I run today, a wider comparison of decision models, and the limits found along the way.</p>
   </header>
 
   <section class="section" aria-labelledby="why">
@@ -212,10 +215,10 @@ tr.pend td { color: var(--muted); }
     <p class="lede">My job search pulls postings from 12 job boards and has to decide, for each one, whether it deserves an email alert, a save for later, or nothing. I started with a general local LLM writing a 1&ndash;10 match score. It worked, but slowly, and its reasons were free text I couldn't count on.</p>
     <p class="lede">Each check in my pipeline has a fixed question and a fixed set of answers, which is what decision models are made for. Several appeared since I started this project. I set two rules for trying them: everything runs on my own machine, because every check includes my resume, and it costs nothing. That ruled out hosted ones such as Jev.</p>
     <div class="models">
-      <div class="model"><span class="kind">General LLM &middot; local</span><h3>Gemma (gemma4:e4b)</h3><p>Through Ollama. Reads my resume and the posting and writes a 1&ndash;10 score with its reasoning. The starting point.</p></div>
-      <div class="model"><span class="kind">Decision model &middot; 9B &middot; local</span><h3>Nimble</h3><p>Answers yes/no and multiple-choice questions through Ollama. Used for one question: "Is this a software engineering role?"</p></div>
-      <div class="model"><span class="kind">Decision model &middot; local</span><h3>Clef-Flash</h3><p>Cloudflare's decision model, tried in Nimble's place on the same question.</p></div>
-      <div class="model"><span class="kind">Decision model &middot; 340M &middot; local</span><h3>GLiNER2.5-Decide</h3><p>A small open decision model from Fastino, used as downloaded.</p></div>
+      <div class="model"><span class="kind">General LLM &middot; local</span><h3>Gemma (gemma4:e4b)</h3><p>Through Ollama, with thinking on, as my old pipeline ran it. Reads my resume and the posting and writes a 1&ndash;10 score with its reasoning. The starting point.</p></div>
+      <div class="model"><span class="kind">Decision model &middot; 9B &middot; local</span><h3>Nimble</h3><p>From Bespoke Labs, through Ollama (5.6 GB at 4 bits). Used for one question: "Is this a software engineering role?"</p></div>
+      <div class="model"><span class="kind">Decision model &middot; 9B &middot; local</span><h3>Clef-Flash</h3><p>Cloudflare's decision model, tried in Nimble's place on the same question. Its default download is about twice Nimble's.</p></div>
+      <div class="model"><span class="kind">Decision model &middot; 340M &middot; local</span><h3>GLiNER2.5-Decide</h3><p>A small open decision model from Fastino that runs on a CPU, used as downloaded.</p></div>
       <div class="model mine"><span class="kind">Decision model &middot; 400M &middot; fine-tuned</span><h3>Laya</h3><p>A ModernBERT-based decision model on Hugging Face (<span class="mono">convaiinnovations/laya</span>), fine-tuned on my own labelled jobs. I asked it two ways, shown in the next section: one question, then three.</p></div>
       <div class="model"><span class="kind">Plain code</span><h3>Rules</h3><p>Country, years of experience asked for, title words such as "senior", contract and hourly-pay wording.</p></div>
     </div>
@@ -234,17 +237,18 @@ tr.pend td { color: var(--muted); }
     <p class="lede"><b>Three questions.</b> Laya's documentation shows a version trained on several question types at once, so I split the judgement and asked in order. A posting that fails a step is skipped, and the run log records why; the grey boxes below are those log lines.</p>
     <div class="path">
       <div class="step"><span class="n">1</span><div><h3>Which stack is this role?</h3><p>Seven choices: backend, frontend, full stack, AI, data, infrastructure or other, read from the posting alone. My search targets backend, full-stack, AI and data roles, so those go on; frontend, infrastructure and other roles are skipped. The accepted list is a setting.</p></div><div class="out"><span class="reason skip"><b>skip</b> &middot; skipped, stack role frontend</span></div></div>
-      <div class="step"><span class="n">2</span><div><h3>Is there a dealbreaker?</h3><p>Clearance, citizenship, a senior level, the wrong kind of role, from the posting alone.</p></div><div class="out"><span class="reason skip"><b>skip</b> &middot; skipped, likely dealbreaker (72%)</span></div></div>
+      <div class="step"><span class="n">2</span><div><h3>Is there a dealbreaker?</h3><p>Clearance, citizenship, a senior level, the wrong kind of role, from the posting alone. A probability of 50% or more skips.</p></div><div class="out"><span class="reason skip"><b>skip</b> &middot; skipped, likely dealbreaker (72%)</span></div></div>
       <div class="step"><span class="n">3</span><div><h3>How well does it fit?</h3><p>A 1&ndash;10 score from my resume and the posting. Laya returns a probability for each score; their weighted average is the fit.</p></div><div class="out"><span class="reason notify"><b>alert</b> &middot; fit 7.02/10, at or above the alert cut-off</span></div></div>
     </div>
+    <p class="lede">The checkpoint I started from was trained on inputs of 1,024 tokens, so the first two questions read up to 1,024 tokens of the posting, and only the fit question, which needs the resume, gets 2,048. A quarter of benchmark postings are cut for the first two questions and 1 in 9 for fit. The cut falls on a condensed posting with the requirements moved to the front, so it drops company, benefits and legal text first: clearance wording was lost for only 1 of the 29 clearance dealbreakers.</p>
   </section>
 
   <section class="section" aria-labelledby="test">
     <span class="eyebrow">The test</span>
     <h2 id="test">500 unseen postings, judged two ways</h2>
-    <p class="lede">I picked 500 postings at random from four days of my search. A larger LLM read each with my full resume and marked 35 as good jobs. No model had seen any of them. Every setup is scored on two questions: <b>alerts worth opening</b> (of the alerts it sent, how many were good jobs) and <b>good jobs caught</b> (of the 35). Both are measured against the labelling LLM, not my own judgement.</p>
+    <p class="lede">I picked 500 postings at random from four days of my search. A larger LLM read each with my full resume and marked 35 as good jobs, 7% of them. None of the 500 was in the training data under the same id or the same title and company; a later full-text check found 5 near-copies posted under other ids, and none of the 5 is alerted below. Every setup is scored on two questions: <b>alerts worth opening</b> (of the alerts it sent, how many were good jobs) and <b>good jobs caught</b> (of the 35).</p>
     <p class="lede">You can't max out both. Alert on every posting and you catch all 35 good jobs, but only 7% of the alerts are worth opening. Alert on almost nothing and most alerts are good, but most good jobs are missed. So every table below shows both scores, plus how many alerts were sent.</p>
-    <p class="lede">To know how high "good" can go, I had the labelling LLM rate 120 of the postings again, including all 35 good jobs. It agreed with itself on about 95% of them, but the borderline postings that decide precision are where it wavered, so even a second pass of the labeller reaches only about 70% of alerts worth opening. That is the realistic ceiling.</p>
+    <p class="lede">One limit applies to every number here: the ground truth is another LLM, not my own judgement. Laya was trained on that LLM's labels and Gemma never saw them, so these scores measure agreement with the labeller, and Laya starts with an advantage in it.</p>
   </section>
 
   <section class="section" aria-labelledby="alone">
@@ -275,34 +279,93 @@ tr.pend td { color: var(--muted); }
       <div><b>156</b><span>after Nimble's "software role?"</span><span class="g">34 good jobs</span></div>
       <div><b>~35&ndash;43</b><span>alerts from the final model</span><span class="g">15&ndash;18 good jobs</span></div>
     </div>
-    <p class="lede">The rules removed almost two thirds of the postings and only 1 good job. On their own they already help a lot: one-question Laya behind the rules alone, alerting at any confidence, sends 97 alerts and 26.8% are worth opening (26 good jobs caught), against 10.1% with no rules in front. Nimble's single yes/no question removed 29 more postings, none of them good jobs. Clef-Flash in Nimble's place did the same (41% of alerts worth opening against 42%), so I kept the smaller download. The final model then only has to judge 156 plausible postings:</p>
-    <p class="lede">Each final model decides an alert in its own terms. Gemma writes a whole-number match score from 1 (no match) to 10 (exceptional); my pipeline has always alerted at 8 or more, and the table also shows 9 or more. Three-question Laya gives a fit score with decimals on the same 1&ndash;10 scale, the average of the probabilities it gives each score, and alerts at 6.07, a line fitted on held-out training postings before this test.</p>
+    <p class="lede">The rules removed almost two thirds of the postings and only 1 good job. On their own they already help a lot: one-question Laya behind the rules alone, alerting at any confidence, sends 97 alerts and 26.8% are worth opening (26 good jobs caught), against 10.1% with no rules in front. Nimble's single yes/no question removed 29 more postings, none of them good jobs. Clef-Flash in Nimble's place did the same (41% of alerts worth opening against 42%), so I kept Nimble, the smaller download.</p>
+    <p class="lede">Each final model decides an alert in its own terms. Gemma writes a whole-number match score from 1 (no match) to 10 (exceptional); my pipeline always alerted at 8 or more, and the table also shows 9 or more. Three-question Laya gives a fit score with decimals on the same 1&ndash;10 scale and alerts at 6.07, a line fitted on held-out training postings before this test.</p>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Final model, behind rules and Nimble</th><th class="num">Alerts</th><th class="num">Worth opening (95% range)</th><th class="num">Good jobs caught</th><th class="num">Per posting</th></tr></thead>
+        <thead><tr><th>Final model, behind rules and Nimble</th><th class="num">Alerts</th><th class="num">Worth opening (95% interval)</th><th class="num">Good jobs caught (95% interval)</th><th class="num">Per posting</th></tr></thead>
         <tbody>
-          <tr class="hl"><td>Three-question Laya: alert when its fit score is 6.07 or more</td><td class="num">35</td><td class="num">42.9% (28&ndash;59%)</td><td class="num">15 of 35</td><td class="num">1.6 s</td></tr>
-          <tr><td>One-question Laya: alert when it answers notify, at least 70% sure</td><td class="num">43</td><td class="num">41.9% (28&ndash;57%)</td><td class="num">18 of 35</td><td class="num">1.5 s</td></tr>
-          <tr><td>Gemma: alert when its match score is 8 or more</td><td class="num">102</td><td class="num">31.4% (23&ndash;41%)</td><td class="num">32 of 35</td><td class="num">97 s</td></tr>
-          <tr><td>Gemma: alert when its match score is 9 or more</td><td class="num">45</td><td class="num">35.6% (23&ndash;50%)</td><td class="num">16 of 35</td><td class="num">97 s</td></tr>
+          <tr class="hl"><td>Three-question Laya, fit 6.07 or more<span class="tag">chosen before</span></td><td class="num">35</td><td class="num">42.9% (26&ndash;60%)</td><td class="num">15 of 35 (26&ndash;61%)</td><td class="num">1.6 s</td></tr>
+          <tr><td>One-question Laya, notify at least 70% sure</td><td class="num">43</td><td class="num">41.9% (27&ndash;57%)</td><td class="num">18 of 35 (34&ndash;68%)</td><td class="num">1.5 s</td></tr>
+          <tr><td>Gemma, score 8 or more (my old cut-off)</td><td class="num">102</td><td class="num">31.4% (23&ndash;41%)</td><td class="num">32 of 35 (81&ndash;100%)</td><td class="num">97 s</td></tr>
+          <tr><td>Gemma, score 9 or more</td><td class="num">45</td><td class="num">35.6% (22&ndash;50%)</td><td class="num">16 of 35 (29&ndash;63%)</td><td class="num">97 s</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="lede">Behind the same rules, the two designs make different trades. With a match score of 8 or more, Gemma catches almost every good job, 32 of 35, but sends three times as many alerts and fewer than a third are worth opening. At 9 or more, it sends about as many alerts as Laya and catches about as many good jobs, with fewer worth opening: 35.6% against 42&ndash;43%. With 35 good jobs the ranges overlap, so at the same number of alerts the small decision model matches the LLM, in 1.6 seconds per posting instead of 97.</p>
+    <p class="lede">Read this as a trade-off, not a ranking. At about the same number of alerts, Laya's are good 42.9% of the time and Gemma's 35.6%, but the paired difference of +7 points runs from &minus;11 to +26. Gemma at its own cut-off of 8 sends three times as many alerts and catches 32 of the 35 good jobs, against Laya's 15. If a missed good job costs me more than an extra email, Gemma's setting is the better one, and Laya would need a lower cut-off: at 5.57 it catches 27 at 34.6%.</p>
+    <p class="lede">Over all cut-offs, ranking quality (average precision, with 95% intervals) is 0.40 (0.27&ndash;0.59) for three-question Laya, 0.34 (0.23&ndash;0.50) for one-question Laya and 0.32 (0.22&ndash;0.44) for Gemma. Every pairwise difference includes zero: the small decision model ranks jobs about as well as the LLM, not better.</p>
+    <div class="lesson" id="today">
+      <p><b>Under today's rules.</b> These numbers use the rules as they stood when the benchmark was built. When the three-question model went live I tightened them to skip senior titles and contracts. Replayed with today's rules, the benchmark keeps 91 postings instead of 156 and 20 good jobs instead of 34; of the 14 lost, 10 have senior titles and 4 are contracts, which the labels count as good and my search now skips on purpose. At the same 6.07 cut-off Laya then sends 21 alerts with 7 good: 33% worth opening, catching 7 of the 20 good jobs left. I have not rerun Gemma under today's rules.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="gates">
+    <span class="eyebrow">What the front of the pipeline is for</span>
+    <h2 id="gates">Once the rules are in place, the role check adds almost nothing</h2>
+    <p class="lede">The weak dealbreaker question looked like the next thing to fix. Before spending another training run on it, I tested its best case: I replaced Laya's stack-role and dealbreaker answers with the labels' own and scored the benchmark again.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Checks before the fit score</th><th class="num">Fit 5.82 or more</th><th class="num">Fit 6.07 or more</th></tr></thead>
+        <tbody>
+          <tr><td>As trained</td><td class="num">38.6% &middot; 22 caught</td><td class="num">41.7% &middot; 15 caught</td></tr>
+          <tr><td>No dealbreaker check at all</td><td class="num">39.7% &middot; 23 caught</td><td class="num">41.7% &middot; 15 caught</td></tr>
+          <tr><td>Perfect dealbreaker</td><td class="num">39.7% &middot; 23 caught</td><td class="num">41.7% &middot; 15 caught</td></tr>
+          <tr><td>Perfect dealbreaker and stack role</td><td class="num">39.7% &middot; 23 caught</td><td class="num">41.7% &middot; 15 caught</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot">This check used the cut-off rounded to 6.07; the tables above use its exact value, 6.0746. One posting scores between the two, which is why 41.7% here is 42.9% there.</p>
+    <p class="lede">The rows differ by at most one posting. The dealbreaker check does fire, on 40 of the 500 benchmark postings, and 90% of those are labelled dealbreakers, but the rules remove 64 of the 78 labelled dealbreakers before it is asked, so inside the pipeline it fires on only 4 of 128 postings. The same goes for Nimble: dropping it and letting Laya's own two checks do its job gives exactly the same result, 35 alerts with 15 good, with every posting the same, at about 0.9 s a posting instead of Nimble's 7.5. My live search now runs without Nimble.</p>
+    <p class="lede">I also tried the decision models released since, on the same 185 postings that pass the rules and the same "software engineering role?" question, on a newer Ollama (0.40.5):</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Decision model</th><th class="num">Postings removed</th><th class="num">Good jobs kept</th><th class="num">Per posting</th><th class="num">Same answer as Nimble</th></tr></thead>
+        <tbody>
+          <tr class="base"><td>Nimble 9B (Bespoke Labs)</td><td class="num">29</td><td class="num">34 of 34</td><td class="num">6.3 s</td><td class="num">&ndash;</td></tr>
+          <tr class="hl"><td>tev1 4B (Together AI)</td><td class="num">30</td><td class="num">34 of 34</td><td class="num">1.9 s</td><td class="num">184 of 185</td></tr>
+          <tr><td>tev1 0.8B (Together AI)</td><td class="num">37</td><td class="num">33 of 34</td><td class="num">0.2 s</td><td class="num">177 of 185</td></tr>
+          <tr><td>strands-decider 2B (Strands Agents)</td><td class="num">34</td><td class="num">34 of 34</td><td class="num">0.6 s</td><td class="num">176 of 185</td></tr>
+          <tr><td>kev 9B (Jared Palmer)</td><td class="num">25</td><td class="num">34 of 34</td><td class="num">3.4 s</td><td class="num">177 of 185</td></tr>
+          <tr><td>nimble-v3 9B (Bespoke Labs)</td><td class="num">29</td><td class="num">34 of 34</td><td class="num">5.8 s</td><td class="num">181 of 185</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lede">tev1 4B answers like Nimble at a third of the time. The faster small models are wrong where it matters to me: strands-decider and tev1 0.8B removed several Data Engineer roles, which my search targets, though none was a labelled good job, so the good-jobs column hides it. nimble-v3 is no faster than Nimble here and is licensed for non-commercial use only. Clef, Cloudflare's 27B model, did not fit next to Laya in 24 GB.</p>
   </section>
 
   <section class="section" aria-labelledby="speed">
     <span class="eyebrow">Speed</span>
-    <h2 id="speed">Seconds per posting on a 24 GB M3 MacBook</h2>
+    <h2 id="speed">About 60&times; faster at scoring, about 8&times; end to end</h2>
     <div class="speed"><div class="srow"><span>Rules</span><span class="bar" style="width: 2%"></span><span class="v">under 0.01 s</span></div><div class="srow"><span>Laya, one question</span><span class="bar" style="width: 63%"></span><span class="v">1.5 s</span></div><div class="srow hi"><span>Laya, three questions</span><span class="bar" style="width: 64%"></span><span class="v">1.6 s</span></div><div class="srow"><span>GLiNER2.5-Decide (CPU)</span><span class="bar" style="width: 75%"></span><span class="v">5.9 s</span></div><div class="srow"><span>Nimble, one yes/no question</span><span class="bar" style="width: 77%"></span><span class="v">7.5 s</span></div><div class="srow"><span>Nimble, full decision</span><span class="bar" style="width: 82%"></span><span class="v">12.9 s</span></div><div class="srow"><span>Gemma, thinking off</span><span class="bar" style="width: 89%"></span><span class="v">29 s</span></div><div class="srow"><span>Gemma, thinking on</span><span class="bar" style="width: 100%"></span><span class="v">97 s</span></div></div>
-    <p class="foot">Typical time per posting, log scale. Laya answers in one forward pass per question; the LLM writes its reasoning token by token.</p>
+    <p class="foot">Median seconds per posting on a 24 GB M3 MacBook, log scale, Ollama 0.35.1. Nimble's yes/no question averages 10.8 s because some postings take much longer. Laya answers in one forward pass per question; the LLM writes its reasoning token by token.</p>
+    <p class="lede">The scoring step alone is about 60 times faster, but both pipelines also ran Nimble on the 185 postings that pass the rules, and once Laya replaced the LLM, Nimble was most of the time:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Per 500 postings</th><th class="num">Nimble</th><th class="num">Scorer</th><th class="num">Total</th><th class="num">Speed-up</th></tr></thead>
+        <tbody>
+          <tr class="hl"><td>Rules, Nimble, three-question Laya</td><td class="num">32 min</td><td class="num">4 min</td><td class="num">36 min</td><td class="num">&mdash;</td></tr>
+          <tr><td>Rules, Nimble, Gemma thinking on</td><td class="num">32 min</td><td class="num">4.2 h</td><td class="num">4.7 h</td><td class="num">about 8&times;</td></tr>
+          <tr class="base"><td>Rules, Nimble, Gemma thinking off</td><td class="num">32 min</td><td class="num">1.3 h</td><td class="num">1.8 h</td><td class="num">about 3&times;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lede">Thinking on is the fair comparison for my setup because it is what my old system ran; thinking off I measured on only 60 postings and never in the pipeline. Without Nimble, as my search runs now, Laya's two checks take about 3 minutes on those 185 postings instead of 32.</p>
   </section>
 
   <section class="section" aria-labelledby="three">
     <span class="eyebrow">Fine-tuning Laya</span>
-    <h2 id="three">What the three questions changed</h2>
-    <p class="lede">Before the split, I retrained the one-question model on new labels several times, with the same three-answer question and later a plain yes/no question (next section). None came close to the original model.</p>
-    <p class="lede">The three-question version brought a retrained model level with the original one, and every skip now says why. Because each question can be tested on its own, I also tried replacing Laya's stack-role and dealbreaker answers with the labels' own, a perfect version of both. Alerts did not change at all: the rules and Nimble had already removed those jobs. So the only part left to improve is the fit score.</p>
+    <h2 id="three">What each question learned</h2>
+    <p class="lede">About 2,680 labelled postings trained the model; a separate 401 picked the best training round and set the alert cut-off, and 237 more tuned how confident each answer should be. Before the split into three questions, I retrained the one-question model on new labels several times, and none came close to the original. The three-question version brought a retrained model level with it, and every skip now says why. On the 401 held-out postings:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Question</th><th class="num">Model</th><th class="num">Simple baseline</th><th>Reading</th></tr></thead>
+        <tbody>
+          <tr><td>Stack role</td><td class="num">82% right</td><td class="num">22% (most common role)</td><td>Learned well; most misses were roles it filed as "other"</td></tr>
+          <tr><td>Fit score</td><td class="num">off by 1.56</td><td class="num">off by 2.06 (always 3)</td><td>Spearman rank correlation 0.71 here, but 0.49 (0.34&ndash;0.62) on the 124 benchmark postings that reach it in the pipeline</td></tr>
+          <tr><td>Dealbreaker</td><td class="num">95% right</td><td class="num">94% (always "no")</td><td>Only about 1 posting in 16 had one, so it learned little; it caught a third of them</td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section class="section" aria-labelledby="yesno">
@@ -320,29 +383,57 @@ tr.pend td { color: var(--muted); }
         </tbody>
       </table>
     </div>
-    <p class="foot">Ranking quality is average precision: how well the reading puts good jobs ahead of the rest, before any cut-off is chosen. The benchmark columns are behind the rules and Nimble, each reading at its own cut-off, fitted on held-out postings before the benchmark.</p>
+    <p class="foot">Ranking quality is average precision on the 401 held-out training postings. The benchmark columns are behind the rules and Nimble, each reading at its own cut-off, fitted on held-out postings before the benchmark.</p>
     <p class="lede">The decimal score comes out slightly ahead on both, though with 35 good jobs the difference is within noise. It also ranked good jobs better before the benchmark, which is why it was chosen. Three reasons the score is the better thing to train on:</p>
     <ul class="plain">
       <li><b>It carries more information.</b> The labels are 1&ndash;10 scores. Training on the score teaches the model that a 6 is nearly good and a 2 is far off; a yes/no label calls both "no".</li>
-      <li><b>"Yes" is rare.</b> Only about 1 posting in 5 is a good job, and a model trained on a rare "yes" learns to stay cautious, which is likely why the yes/no model's probabilities stayed low.</li>
+      <li><b>"Yes" is rare.</b> Only about 1 training posting in 6 is a good job (416 of 2,679), and a model trained on a rare "yes" learns to stay cautious, which is likely why the yes/no model's probabilities stayed low.</li>
       <li><b>The score model gives the yes/no answer for free.</b> The 7&ndash;10 sum above is that answer; a yes/no model cannot give the score back.</li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="ceiling">
+    <span class="eyebrow">How good can it get</span>
+    <h2 id="ceiling">The labeller disagrees with itself near the line</h2>
+    <p class="lede">I had the labelling LLM rate 120 benchmark postings a second time: all 35 good jobs, 30 of the 43 borderline ones and 55 of the 422 clear skips. It kept 34 of the 35 good jobs good and called 10 of the 30 borderline ones good the second time. Weighted back to the full benchmark, its second pass reaches about 70% of alerts worth opening while catching 97% of good jobs.</p>
+    <p class="lede">Two limits on that number. None of the 55 sampled skips flipped, but 55 is a small sample; allowing for flips it could have missed, the second pass lands anywhere from about 50% to 78%. And it is measured at 97% of good jobs caught, while Laya works at 43%; at a stricter setting the second pass reaches about 90% at 40%. The useful reading is that the labels themselves are fuzzy at the borderline, which caps any model trained on them.</p>
+  </section>
+
+  <section class="section" aria-labelledby="live">
+    <span class="eyebrow">In the live search</span>
+    <h2 id="live">Live traffic is not the benchmark</h2>
+    <p class="lede">Live, 13&ndash;17% of new postings reach Laya, against about a third on the benchmark. The difference is the rules, not the postings: replayed under the same rules, live postings and the benchmark pass at similar rates (23% and 20%). Alerts in the live search now carry feedback buttons, so the model will also be measured on my own judgement instead of the labelling LLM's.</p>
+    <p class="lede">One rule improved more than any model change: Dice lists each job's employment type, and reading that field catches the contract roles my wording rules missed: they let through 55 of the 94 Dice contract postings that reached them. Where a board already says the answer, read it before asking any model.</p>
+  </section>
+
+  <section class="section" aria-labelledby="limits">
+    <span class="eyebrow">Limits</span>
+    <h2 id="limits">What this benchmark can't tell you</h2>
+    <ul class="plain">
+      <li><b>The benchmark was reused.</b> The same 500 postings judged five Laya retrains, so the best of them is likely a little optimistic on it. This model's training round and its 6.07 cut-off were chosen on separate data, but the decision to keep this design was not.</li>
+      <li><b>It missed the bar I set in advance.</b> I wanted at least 18 good jobs caught at the chosen cut-off; it caught 15. The case for it rests on ranking that ties the LLM, speed, and skips that explain themselves, not on beating anything.</li>
+      <li><b>The live cut-off has no held-out basis.</b> My search alerts at 6.5, which was not chosen on held-out data. On the benchmark that sends 9 alerts with 5 good: too few to read.</li>
+      <li><b>The benchmark is older than the rules.</b> Under today's rules it is a smaller, harder test (<a href="#today">above</a>).</li>
+      <li><b>The ground truth is an LLM,</b> which Laya was trained to imitate.</li>
+      <li><b>Small numbers.</b> Thirty-five good jobs make every interval wide.</li>
     </ul>
   </section>
 
   <section class="section" aria-labelledby="learned">
     <span class="eyebrow">What I learned</span>
-    <h2 id="learned">Five things about decision models in practice</h2>
+    <h2 id="learned">Six things about decision models in practice</h2>
     <ul class="lessons">
       <li><b>Ask one specific question.</b><span>Nimble asked "Is this a software role?" lost no good jobs. Asked "Should I get an alert?", one alert in six was worth opening.</span></li>
-      <li><b>Order beats model choice.</b><span>Every model did far better behind cheap rules than on its own, and swapping Nimble for Clef-Flash changed nothing.</span></li>
-      <li><b>Test on your own task, not the maker's benchmark.</b><span>A model that leads its own benchmark can still be unusable on a different task, as GLiNER2.5-Decide was here.</span></li>
-      <li><b>Split a fuzzy judgement into narrow questions.</b><span>A small model fine-tuned on three questions matched my best model and explains every skip.</span></li>
-      <li><b>Measure the ceiling and the best case before tuning.</b><span>Relabelling a sample put the ceiling near 70%; a perfect-answer test showed which part can still move it.</span></li>
+      <li><b>Order beats model choice.</b><span>Every model did far better behind cheap rules than on its own, and once the rules were in place, swapping or removing the role-check model changed nothing.</span></li>
+      <li><b>Test on your own task, not the maker's benchmark.</b><span>GLiNER2.5-Decide leads its own benchmark and said "alert" to 499 of 500 postings here; faster small models dropped the data roles my search wants.</span></li>
+      <li><b>Split a fuzzy judgement into narrow questions.</b><span>A small model fine-tuned on three questions tied the LLM on ranking and explains every skip.</span></li>
+      <li><b>Compare curves with intervals, and time the whole pipeline.</b><span>At one cut-off Laya looked better than the LLM; over all cut-offs it ties. A 60&times; faster scorer made an 8&times; faster pipeline once the step in front of it was counted.</span></li>
+      <li><b>Re-measure when the rules change.</b><span>Tightening one filter dropped 14 of the 34 good jobs the benchmark kept, and the headline with it.</span></li>
     </ul>
   </section>
 
   <footer class="foot">
-    <span>Everything runs locally and free; Laya's fine-tuning used about 20 minutes of a cloud GPU. Numbers are counts over the 500-posting benchmark; no individual postings or resume details are shown.</span>
+    <span>Everything runs locally and free; Laya's fine-tuning used about 20 minutes of a cloud GPU. Intervals are 95% bootstrap intervals over postings. Timings are on a 24 GB M3 MacBook with Ollama 0.35.1, except the decision-model comparison (0.40.5). Numbers are counts over the 500-posting benchmark, held-out training postings and the live search; no individual postings or resume details are shown.</span>
   </footer>
 </main>
 <script>
