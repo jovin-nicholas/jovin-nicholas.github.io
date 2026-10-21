@@ -223,7 +223,7 @@ html.light { --c1: #9a6f1c; --c2: #3f6fae; --c3: #b0523b; --c0: #8d877f; }
     <div class="tiles" aria-label="Headline results">
       <div class="tile new"><span class="label">500 postings, end to end</span><b>36 min</b><span class="sub">vs about 4.7 h with the LLM<br>about 8&times; faster</span></div>
       <div class="tile"><span class="label">Ranking quality</span><b>0.40</b><span class="sub">vs 0.32 for the LLM<br>a tie within the 95% interval</span></div>
-      <div class="tile"><span class="label">Alerts worth opening</span><b>42.9%</b><span class="sub">random pick: 7%<br><a href="#today">33% under today's rules</a></span></div>
+      <div class="tile"><span class="label">Laya at its alert cut-off</span><b>15 of 35</b><span class="sub">good jobs caught<br>42.9% of alerts worth opening<br><a href="#today">7 of 20 under today's rules</a></span></div>
     </div>
   </header>
 
@@ -288,9 +288,9 @@ html.light { --c1: #9a6f1c; --c2: #3f6fae; --c3: #b0523b; --c0: #8d877f; }
         </tbody>
       </table>
     </div>
-    <p class="lede">It is a trade-off, not a ranking. At a similar number of alerts Laya is ahead by 7 points, but that difference runs from &minus;11 to +26. Gemma at 8 catches 32 of the 35 good jobs with three times the alerts. Over all cut-offs, ranking quality (average precision) is 0.40 for Laya and 0.32 for Gemma, and the interval of the difference includes zero.</p>
+    <p class="lede">It is a trade-off, not a ranking. When both catch the same number of good jobs, their alerts are about as clean: catching 16, 40% of Laya's alerts are worth opening against 36% of Gemma's; catching 32, 30% against 31%. Laya's own cut-off stops at 15 good jobs, short of the 18 I aimed for, while Gemma at 8 catches 32 with three times the alerts. Over all cut-offs, ranking quality (average precision) is 0.40 for Laya and 0.32 for Gemma, and the interval of the difference includes zero.</p>
     <div class="lesson" id="today">
-      <p><b>Under today's rules.</b> When the model went live I tightened the rules to skip senior titles and contracts. Replayed with them, the benchmark keeps 20 good jobs instead of 34 (10 senior and 4 contract roles that the labels count as good), and Laya sends 21 alerts with 7 good: 33% worth opening.</p>
+      <p><b>Under today's rules.</b> When the model went live I tightened the rules to skip senior titles and contracts. Replayed with them, the benchmark keeps 20 good jobs instead of 34 (10 senior and 4 contract roles that the labels count as good), and Laya's 21 alerts catch 7 of the 20 good jobs left, and 33% of them are worth opening.</p>
     </div>
   </section>
 
@@ -319,7 +319,7 @@ html.light { --c1: #9a6f1c; --c2: #3f6fae; --c3: #b0523b; --c0: #8d877f; }
     <span class="eyebrow">Limits</span>
     <h2 id="limits">What this benchmark can't tell you</h2>
     <ul class="plain">
-      <li><b>It was reused.</b> The same 500 postings judged five Laya retrains, so the best of them is likely a little optimistic, and it caught 15 good jobs against the 18 I aimed for.</li>
+      <li><b>It was reused.</b> The same 500 postings judged five Laya retrains, so the best of them is likely a little optimistic.</li>
       <li><b>The ground truth is an LLM</b> that Laya was trained to imitate; alert emails now carry feedback buttons to measure it on my own judgement.</li>
       <li><b>Small numbers.</b> Thirty-five good jobs make every interval wide.</li>
       <li><b>A few near-copies.</b> 5 benchmark postings have near-identical copies in the training data under other ids; none of them is alerted.</li>
